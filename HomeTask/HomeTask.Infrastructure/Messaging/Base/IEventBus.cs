@@ -4,6 +4,6 @@ namespace HomeTask.Infrastructure.Messaging.Base
 {
     public interface IEventBus
     {
-        void Publish(Envelope<IEvent> @event);
+        void Publish(IEvent @event);
     }
 }

@@ -14,14 +14,9 @@ namespace HomeTask.Infrastructure.Messaging.InMemory
             _eventDispatcher = new EventDispatcher();
         }
 
-        public void Publish(Envelope<IEvent> @event)
+        public void Publish(IEvent @event)
         {
-            _eventDispatcher.DispatchMessage(@event.Body);
-        }
-
-        public void Publish(IEnumerable<Envelope<IEvent>> events)
-        {
-            _eventDispatcher.DispatchMessages(events.Select(evt => evt.Body));
+            _eventDispatcher.DispatchMessage(@event);
         }
 
         public void Register(IEventHandler handler)

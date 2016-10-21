@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeTask.Infrastructure", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeTask.Persistence", "HomeTask.Persistence\HomeTask.Persistence.csproj", "{244EA500-53BF-4CD0-B367-9CF89313104F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeTask.Application", "HomeTask.Application\HomeTask.Application.csproj", "{3072F6E9-F839-47A6-8220-EDA646FD4D29}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{244EA500-53BF-4CD0-B367-9CF89313104F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{244EA500-53BF-4CD0-B367-9CF89313104F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{244EA500-53BF-4CD0-B367-9CF89313104F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3072F6E9-F839-47A6-8220-EDA646FD4D29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3072F6E9-F839-47A6-8220-EDA646FD4D29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3072F6E9-F839-47A6-8220-EDA646FD4D29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3072F6E9-F839-47A6-8220-EDA646FD4D29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

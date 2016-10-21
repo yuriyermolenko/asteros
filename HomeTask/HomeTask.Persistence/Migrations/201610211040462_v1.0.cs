@@ -1,6 +1,5 @@
 namespace HomeTask.Persistence.Migrations
 {
-    using System;
     using System.Data.Entity.Migrations;
     
     public partial class v10 : DbMigration
