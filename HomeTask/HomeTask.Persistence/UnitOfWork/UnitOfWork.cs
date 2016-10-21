@@ -1,4 +1,5 @@
-﻿using HomeTask.Domain.Aggregates.ClientAgg;
+﻿using System.Threading.Tasks;
+using HomeTask.Domain.Aggregates.ClientAgg;
 using HomeTask.Domain.Aggregates.OrderAgg;
 using HomeTask.Persistence.Context;
 using HomeTask.Persistence.Repositories;
@@ -10,6 +11,7 @@ namespace HomeTask.Persistence.UnitOfWork
         private readonly IHomeTaskDbContext _dbContext;
 
         private IRepository<Client> _clientRepository;
+
         public IRepository<Client> ClientRepository => _clientRepository ?? (_clientRepository = new Repository<Client>(_dbContext));
 
         private IRepository<Order> _orderRepository;
@@ -23,6 +25,11 @@ namespace HomeTask.Persistence.UnitOfWork
         public void Commit()
         {
             _dbContext.SaveChanges();
+        }
+
+        public async Task CommitAsync()
+        {
+            await _dbContext.SaveChangesAsync();
         }
 
         public void Dispose()

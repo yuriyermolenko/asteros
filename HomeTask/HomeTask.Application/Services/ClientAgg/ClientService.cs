@@ -47,7 +47,6 @@ namespace HomeTask.Application.Services.ClientAgg
                 unitOfWork = _unitOfWorkFactory.CreateScope();
 
                 unitOfWork.ClientRepository.Insert(client);
-                unitOfWork.Commit();
             }
             catch (Exception ex)
             {
@@ -73,6 +72,7 @@ namespace HomeTask.Application.Services.ClientAgg
             return client.Id;
         }
 
+        // fake-async
         public Task<int> CreateAsync(CreateClientRequest request)
         {
             return Task.Run(() => Create(request));
@@ -114,6 +114,7 @@ namespace HomeTask.Application.Services.ClientAgg
             }
         }
 
+        // fake-async
         public Task DeleteAsync(int clientId)
         {
             return Task.Run(() => Delete(clientId));
@@ -131,6 +132,8 @@ namespace HomeTask.Application.Services.ClientAgg
             }
         }
 
+
+        // fake-async
         public Task<IEnumerable<ClientDTO>> GetAllAsync()
         {
             return Task.Run(() => GetAll());

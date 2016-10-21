@@ -73,6 +73,7 @@ namespace HomeTask.Application.Services.OrderAgg
             return order.Id;
         }
 
+        // fake-async
         public Task<int> CreateAsync(CreateOrderRequest request)
         {
             return Task.Run(() => Create(request));
@@ -121,6 +122,7 @@ namespace HomeTask.Application.Services.OrderAgg
             }
         }
 
+        // fake-async
         public Task UpdateAsync(UpdateOrderRequest request)
         {
             return Task.Run(() => Update(request));
@@ -162,6 +164,7 @@ namespace HomeTask.Application.Services.OrderAgg
             }
         }
 
+        // fake-async
         public Task DeleteAsync(int orderId)
         {
             return Task.Run(() => DeleteAsync(orderId));
@@ -179,6 +182,7 @@ namespace HomeTask.Application.Services.OrderAgg
             }
         }
 
+        // fake-async
         public Task<IEnumerable<OrderDTO>> GetForClientAsync(int clientId)
         {
             return Task.Run(() => GetForClientAsync(clientId));
