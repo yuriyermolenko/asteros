@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using HomeTask.Application.DTO.Client;
 using HomeTask.Application.Exceptions;
-using HomeTask.Application.Services.Base;
 using HomeTask.Application.TypeAdapter;
 using HomeTask.Domain.Aggregates.ClientAgg;
 using HomeTask.Domain.Contracts.Events.Client;
 using HomeTask.Domain.Specifications;
 using HomeTask.Infrastructure.Logging.Base;
 using HomeTask.Infrastructure.Messaging.Base;
-using HomeTask.Persistence.Repositories;
+using HomeTask.Persistence.UnitOfWork;
 
 namespace HomeTask.Application.Services.ClientAgg
 {
@@ -18,16 +17,16 @@ namespace HomeTask.Application.Services.ClientAgg
     {
         private static readonly ILogger Logger = LoggerFactory.CreateLog();
 
-        private readonly IRepository<Client> _clientRepository;
+        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         private readonly ITypeAdapter _typeAdapter;
         private readonly IEventBus _eventBus;
 
         public ClientService(
-            IRepository<Client> clientRepository,
+            IUnitOfWorkFactory unitOfWorkFactory,
             ITypeAdapter typeAdapter,
             IEventBus eventBus)
         {
-            _clientRepository = clientRepository;
+            _unitOfWorkFactory = unitOfWorkFactory;
             _typeAdapter = typeAdapter;
             _eventBus = eventBus;
         }
@@ -40,10 +39,14 @@ namespace HomeTask.Application.Services.ClientAgg
 
             var client = _typeAdapter.Create<CreateClientRequest, Client>(request);
 
+            IUnitOfWork unitOfWork = null;
+
             try
             {
-                _clientRepository.Insert(client);
-                _clientRepository.Commit();
+                unitOfWork = _unitOfWorkFactory.CreateScope();
+
+                unitOfWork.ClientRepository.Insert(client);
+                unitOfWork.Commit();
             }
             catch (Exception ex)
             {
@@ -54,6 +57,10 @@ namespace HomeTask.Application.Services.ClientAgg
                 Logger.LogError("LotService: " + message, ex);
 
                 throw new HomeTaskException(message, ex);
+            }
+            finally
+            {
+                unitOfWork?.Dispose();
             }
 
             Logger.LogInfo("LotService: New client created " +
@@ -69,47 +76,48 @@ namespace HomeTask.Application.Services.ClientAgg
         {
             Logger.Debug($"LotService: Deleting client Id {clientId}");
 
-            var client = _clientRepository.FirstOrDefault(ClientSpecifications.ById(clientId));
-
-            if (client == null)
+            using (var unitOfWork = _unitOfWorkFactory.CreateScope())
             {
-                var message = $"Unable to find client Id {clientId}";
+                var client = unitOfWork.ClientRepository.FirstOrDefault(ClientSpecifications.ById(clientId));
 
-                Logger.LogWarning($"LotService: " + message);
+                if (client == null)
+                {
+                    var message = $"Unable to find client Id {clientId}";
 
-                throw new NotFoundException(message);
+                    Logger.LogWarning($"LotService: " + message);
+
+                    throw new NotFoundException(message);
+                }
+
+                try
+                {
+                    unitOfWork.ClientRepository.Delete(client);
+                    unitOfWork.Commit();
+                }
+                catch (Exception ex)
+                {
+                    var message = $"Failed to delete client Id {clientId}";
+                    Logger.LogError($"LotService: " + message, ex);
+
+                    throw new HomeTaskException(ex.Message, ex);
+                }
+
+                Logger.LogInfo($"LotService: Client Id {clientId} deleted");
+
+                _eventBus.Publish(_typeAdapter.Create<Client, ClientDeleted>(client));
             }
-
-            try
-            {
-                _clientRepository.Delete(client);
-                _clientRepository.Commit();
-            }
-            catch (Exception ex)
-            {
-                var message = $"Failed to delete client Id {clientId}";
-                Logger.LogError($"LotService: " + message, ex);
-
-                throw new HomeTaskException(ex.Message, ex);
-            }
-
-            Logger.LogInfo($"LotService: Client Id {clientId} deleted");
-
-            _eventBus.Publish(_typeAdapter.Create<Client, ClientDeleted>(client));
         }
 
         public IEnumerable<ClientDTO> GetAll()
         {
             Logger.Debug("LotService: Retrieving all the clients");
 
-            var result = _clientRepository.Find(ClientSpecifications.Any());
+            using (var unitOfWork = _unitOfWorkFactory.CreateScope())
+            {
+                var result = unitOfWork.ClientRepository.Find(ClientSpecifications.Any());
 
-            return result.Select(elem => _typeAdapter.Create<Client, ClientDTO>(elem));
-        }
-
-        public void Dispose()
-        {
-            _clientRepository?.Dispose();
+                return result.Select(elem => _typeAdapter.Create<Client, ClientDTO>(elem));
+            }
         }
     }
 }

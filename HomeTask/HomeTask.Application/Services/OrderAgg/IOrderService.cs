@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using HomeTask.Application.DTO.Order;
 using HomeTask.Application.Services.Base;
 
 namespace HomeTask.Application.Services.OrderAgg
 {
-    public interface IOrderService : IApplicationService, IDisposable
+    public interface IOrderService : IApplicationService
     {
         int Create(CreateOrderRequest request);
         void Update(UpdateOrderRequest request);

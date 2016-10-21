@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using HomeTask.Domain.Contracts.Events.Base;
 using HomeTask.Infrastructure.Messaging.Base;
 

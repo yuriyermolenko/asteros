@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using HomeTask.Application.DTO.Order;
 using HomeTask.Application.Exceptions;
-using HomeTask.Application.Services.Base;
 using HomeTask.Application.TypeAdapter;
 using HomeTask.Domain.Aggregates.OrderAgg;
 using HomeTask.Domain.Contracts.Events.Order;
 using HomeTask.Domain.Specifications;
 using HomeTask.Infrastructure.Logging.Base;
 using HomeTask.Infrastructure.Messaging.Base;
-using HomeTask.Persistence.Repositories;
+using HomeTask.Persistence.UnitOfWork;
 
 namespace HomeTask.Application.Services.OrderAgg
 {
@@ -18,16 +17,16 @@ namespace HomeTask.Application.Services.OrderAgg
     {
         private static readonly ILogger Logger = LoggerFactory.CreateLog();
 
-        private readonly IRepository<Order> _orderRepository;
+        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         private readonly ITypeAdapter _typeAdapter;
         private readonly IEventBus _eventBus;
 
         public OrderService(
-            IRepository<Order> orderRepository,
+            IUnitOfWorkFactory unitOfWorkFactory,
             ITypeAdapter typeAdapter,
             IEventBus eventBus)
         {
-            _orderRepository = orderRepository;
+            _unitOfWorkFactory = unitOfWorkFactory;
             _typeAdapter = typeAdapter;
             _eventBus = eventBus;
         }
@@ -40,10 +39,14 @@ namespace HomeTask.Application.Services.OrderAgg
 
             var order = _typeAdapter.Create<CreateOrderRequest, Order>(request);
 
+            IUnitOfWork unitOfWork = null;
+
             try
             {
-                _orderRepository.Insert(order);
-                _orderRepository.Commit();
+                unitOfWork = _unitOfWorkFactory.CreateScope();
+
+                unitOfWork.OrderRepository.Insert(order);
+                unitOfWork.Commit();
             }
             catch (Exception ex)
             {
@@ -54,6 +57,10 @@ namespace HomeTask.Application.Services.OrderAgg
                 Logger.LogError("OrderService: " + message, ex);
 
                 throw new HomeTaskException(message, ex);
+            }
+            finally
+            {
+                unitOfWork?.Dispose();
             }
 
             Logger.LogInfo("OrderService: New order created for" +
@@ -71,85 +78,89 @@ namespace HomeTask.Application.Services.OrderAgg
                  $"Client Id : {request.ClientId} " +
                  $"Description: {request.Description}");
 
-            var order = _orderRepository.FirstOrDefault(OrderSpecifications.ById(request.Id));
-
-            if (order == null)
+            using (var unitOfWork = _unitOfWorkFactory.CreateScope())
             {
-                var message = $"Unable to find order Id {request.Id}";
+                var order = unitOfWork.OrderRepository.FirstOrDefault(OrderSpecifications.ById(request.Id));
 
-                Logger.LogWarning($"OrderService: " + message);
+                if (order == null)
+                {
+                    var message = $"Unable to find order Id {request.Id}";
 
-                throw new NotFoundException(message);
+                    Logger.LogWarning($"OrderService: " + message);
+
+                    throw new NotFoundException(message);
+                }
+
+                try
+                {
+                    _typeAdapter.Update(request, order);
+                    unitOfWork.Commit();
+                }
+                catch (Exception ex)
+                {
+                    var message = $"Failed to update order Id {request.Id}" +
+                                  $"Client Id : {request.ClientId} " +
+                                  $"Description: {request.Description}";
+
+                    Logger.LogError($"OrderService: " + message, ex);
+
+                    throw new HomeTaskException(ex.Message, ex);
+                }
+
+                Logger.LogInfo($"OrderService: Order id {request.Id} updated" +
+                    $"Client Id : {request.ClientId} " +
+                    $"Description: {request.Description}");
+
+                _eventBus.Publish(_typeAdapter.Create<Order, OrderUpdated>(order));
             }
-
-            try
-            {
-                _typeAdapter.Update(request, order);
-                _orderRepository.Commit();
-            }
-            catch (Exception ex)
-            {
-                var message = $"Failed to update order Id {request.Id}" +
-                 $"Client Id : {request.ClientId} " +
-                 $"Description: {request.Description}";
-
-                Logger.LogError($"OrderService: " + message, ex);
-
-                throw new HomeTaskException(ex.Message, ex);
-            }
-
-            Logger.LogInfo($"OrderService: Order id {request.Id} updated" +
-                $"Client Id : {request.ClientId} " +
-                $"Description: {request.Description}");
-
-            _eventBus.Publish(_typeAdapter.Create<Order, OrderUpdated>(order));
         }
 
         public void Delete(int orderId)
         {
             Logger.Debug($"OrderService: Deleting order Id {orderId}");
 
-            var order = _orderRepository.FirstOrDefault(OrderSpecifications.ById(orderId));
-
-            if (order == null)
+            using (var unitOfWork = _unitOfWorkFactory.CreateScope())
             {
-                var message = $"Unable to find order Id {orderId}";
+                var order = unitOfWork.OrderRepository.FirstOrDefault(OrderSpecifications.ById(orderId));
 
-                Logger.LogWarning($"OrderService: " + message);
+                if (order == null)
+                {
+                    var message = $"Unable to find order Id {orderId}";
 
-                throw new NotFoundException(message);
+                    Logger.LogWarning($"OrderService: " + message);
+
+                    throw new NotFoundException(message);
+                }
+
+                try
+                {
+                    unitOfWork.OrderRepository.Delete(order);
+                    unitOfWork.Commit();
+                }
+                catch (Exception ex)
+                {
+                    var message = $"Failed to delete order Id {orderId}";
+                    Logger.LogError($"OrderService: " + message, ex);
+
+                    throw new HomeTaskException(ex.Message, ex);
+                }
+
+                Logger.LogInfo($"OrderService: Order Id {orderId} deleted");
+
+                _eventBus.Publish(_typeAdapter.Create<Order, OrderDeleted>(order));
             }
-
-            try
-            {
-                _orderRepository.Delete(order);
-                _orderRepository.Commit();
-            }
-            catch (Exception ex)
-            {
-                var message = $"Failed to delete order Id {orderId}";
-                Logger.LogError($"OrderService: " + message, ex);
-
-                throw new HomeTaskException(ex.Message, ex);
-            }
-
-            Logger.LogInfo($"OrderService: Order Id {orderId} deleted");
-
-            _eventBus.Publish(_typeAdapter.Create<Order, OrderDeleted>(order));
         }
 
         public IEnumerable<OrderDTO> GetForClient(int clientId)
         {
             Logger.Debug($"LotService: Retrieving orders for {clientId}");
 
-            var result = _orderRepository.Find(OrderSpecifications.ByClientId(clientId));
+            using (var unitOfWork = _unitOfWorkFactory.CreateScope())
+            {
+                var result = unitOfWork.OrderRepository.Find(OrderSpecifications.ByClientId(clientId));
 
-            return result.Select(elem => _typeAdapter.Create<Order, OrderDTO>(elem));
-        }
-
-        public void Dispose()
-        {
-            _orderRepository?.Dispose();
+                return result.Select(elem => _typeAdapter.Create<Order, OrderDTO>(elem));
+            }
         }
     }
 }

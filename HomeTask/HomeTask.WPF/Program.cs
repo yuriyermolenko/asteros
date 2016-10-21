@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Data.Entity;
-using HomeTask.Application.Factory;
 using HomeTask.Application.Services.ClientAgg;
 using HomeTask.Application.Services.OrderAgg;
 using HomeTask.Application.TypeAdapter;
@@ -8,12 +6,11 @@ using HomeTask.Infrastructure.Logging.Base;
 using HomeTask.Infrastructure.Logging.NLog;
 using HomeTask.Infrastructure.Messaging.Base;
 using HomeTask.Infrastructure.Messaging.InMemory;
-using HomeTask.Persistence;
 using HomeTask.Persistence.Repositories;
+using HomeTask.Persistence.UnitOfWork;
 using HomeTask.WPF.ViewModels;
 using HomeTask.WPF.Views;
 using SimpleInjector;
-using SimpleInjector.Diagnostics;
 
 namespace HomeTask.WPF
 {
@@ -24,7 +21,7 @@ namespace HomeTask.WPF
         {
             var container = Bootstrap();
 
-            // Any additional other configuration, e.g. of your desired MVVM toolkit.
+            // Any additional other configuration
 
             RunApplication(container);
         }
@@ -37,12 +34,11 @@ namespace HomeTask.WPF
             var container = new Container();
 
             // data access
-            container.Register<DbContext, HomeTaskDbContext>();
+            container.Register<IUnitOfWorkFactory, UnitOfWorkFactory>();
 
             container.Register(typeof(IRepository<>), typeof(Repository<>));
 
             // application
-            container.Register<IAppServiceFactory>(() => new AppServiceFactory(container));
             container.Register<ITypeAdapter, FastMapperTypeAdapter>();
             container.Register<IClientService, ClientService>();
             container.Register<IOrderService, OrderService>();
@@ -54,7 +50,7 @@ namespace HomeTask.WPF
             container.Register<MainView>();
             container.Register<IMainViewModel, MainViewModel>();
 
-            //container.Verify();
+            container.Verify();
 
             return container;
         }

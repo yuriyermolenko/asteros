@@ -5,7 +5,7 @@ using HomeTask.Domain.Specifications.Base;
 
 namespace HomeTask.Persistence.Repositories
 {
-    public interface IRepository<TEntity> : IUnitOfWork, IDisposable where TEntity : class, IEntity
+    public interface IRepository<TEntity> : IDisposable where TEntity : class, IEntity
     {
         IEnumerable<TEntity> Find(params Specification<TEntity>[] specifications);
         TEntity FirstOrDefault(params Specification<TEntity>[] specifications);

@@ -1,23 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
 using System.Linq;
 using HomeTask.Domain.Aggregates.Base;
 using HomeTask.Domain.Specifications.Base;
+using HomeTask.Persistence.Context;
 
 namespace HomeTask.Persistence.Repositories
 {
     // simplified version
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity
     {
-        private readonly DbContext _dbContext;
-        private readonly IObjectSet<TEntity> _objectSet;
+        private readonly IHomeTaskDbContext _dbContext;
+        private readonly DbSet<TEntity> _dbSet;
 
-        public Repository(DbContext dbContext)
+        public Repository(IHomeTaskDbContext dbContext)
         {
             _dbContext = dbContext;
-            _objectSet = dbContext.GetObjectContext().CreateObjectSet<TEntity>();
+            _dbSet = dbContext.Set<TEntity>();
         }
 
         public IEnumerable<TEntity> Find(params Specification<TEntity>[] specifications)
@@ -44,12 +43,12 @@ namespace HomeTask.Persistence.Repositories
 
         public void Delete(TEntity entity)
         {
-            _objectSet.DeleteObject(entity);
+            _dbSet.Remove(entity);
         }
 
         public void Insert(TEntity entity)
         {
-            _objectSet.AddObject(entity);
+            _dbSet.Add(entity);
         }
 
         public void Commit()
@@ -57,14 +56,9 @@ namespace HomeTask.Persistence.Repositories
             _dbContext.SaveChanges();
         }
 
-        public void Rollback()
-        {
-            throw new System.NotImplementedException();
-        }
-
         private IQueryable<TEntity> AsQueryable()
         {
-            return _objectSet;
+            return _dbSet;
         }
 
         public void Dispose()

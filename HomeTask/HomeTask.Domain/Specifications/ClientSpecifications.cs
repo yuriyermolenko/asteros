@@ -1,5 +1,4 @@
-﻿using System;
-using HomeTask.Domain.Aggregates.ClientAgg;
+﻿using HomeTask.Domain.Aggregates.ClientAgg;
 using HomeTask.Domain.Specifications.Base;
 
 namespace HomeTask.Domain.Specifications

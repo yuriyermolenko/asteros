@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using HomeTask.Application.DTO.Client;
 using HomeTask.Application.Services.Base;
 
 namespace HomeTask.Application.Services.ClientAgg
 {
-    public interface IClientService : IApplicationService, IDisposable
+    public interface IClientService : IApplicationService
     {
         int Create(CreateClientRequest request);
         void Delete(int clientId);

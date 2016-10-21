@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using HomeTask.Application.DTO.Client;
-using HomeTask.Application.Factory;
 using HomeTask.Application.Services.ClientAgg;
 using HomeTask.Application.TypeAdapter;
 using HomeTask.WPF.ViewModels.Base;
@@ -11,7 +10,7 @@ namespace HomeTask.WPF.ViewModels
 {
     public class MainViewModel : ObservableObject, IMainViewModel
     {
-        private readonly IAppServiceFactory _serviceFactory;
+        private readonly IClientService _clientService;
         private readonly ITypeAdapter _typeAdapter;
 
         private ObservableCollection<ClientObservable> _clientsCollection;
@@ -31,19 +30,16 @@ namespace HomeTask.WPF.ViewModels
 
 
         public MainViewModel(
-            IAppServiceFactory serviceFactory,
+            IClientService clientService,
             ITypeAdapter typeAdapter)
         {
-            _serviceFactory = serviceFactory;
+            _clientService = clientService;
             _typeAdapter = typeAdapter;
 
-            using (var clientService = serviceFactory.Create<IClientService>())
-            {
-                var clients = clientService.GetAll();
+            var clients = clientService.GetAll();
 
-                _clientsCollection = new ObservableCollection<ClientObservable>(
-                    _typeAdapter.Create<IEnumerable<ClientDTO>, IEnumerable<ClientObservable>>(clients));
-            }
+            _clientsCollection = new ObservableCollection<ClientObservable>(
+                _typeAdapter.Create<IEnumerable<ClientDTO>, IEnumerable<ClientObservable>>(clients));
         }
     }
 }

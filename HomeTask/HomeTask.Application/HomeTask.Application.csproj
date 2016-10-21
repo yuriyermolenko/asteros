@@ -55,8 +55,6 @@
     <Compile Include="DTO\Order\UpdateOrderRequest.cs" />
     <Compile Include="Exceptions\HomeTaskException.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
-    <Compile Include="Factory\AppServiceFactory.cs" />
-    <Compile Include="Factory\IAppServiceFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ClientAgg\ClientService.cs" />
     <Compile Include="Services\ClientAgg\IClientService.cs" />

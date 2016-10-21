@@ -1,9 +1,9 @@
 ﻿using System.Data.Entity;
 using HomeTask.Persistence.Mappings;
 
-namespace HomeTask.Persistence
+namespace HomeTask.Persistence.Context
 {
-    public class HomeTaskDbContext : DbContext
+    public class HomeTaskDbContext : DbContext, IHomeTaskDbContext
     {
         public HomeTaskDbContext()
             : base("HomeTaskConnection")
@@ -11,12 +11,6 @@ namespace HomeTask.Persistence
         {
             Database.SetInitializer<HomeTaskDbContext>(new HomeTaskDbInitializer());
         }
-
-        //public HomeTaskDbContext(IDatabaseInitializer<HomeTaskDbContext> initializer)
-        //    : base("HomeTaskConnection")
-        //{
-        //    Database.SetInitializer<HomeTaskDbContext>(initializer);
-        //}
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

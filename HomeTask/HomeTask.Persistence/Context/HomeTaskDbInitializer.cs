@@ -1,7 +1,7 @@
 ﻿using System.Data.Entity;
 using HomeTask.Persistence.Migrations;
 
-namespace HomeTask.Persistence
+namespace HomeTask.Persistence.Context
 {
     public class HomeTaskDbInitializer : IDatabaseInitializer<HomeTaskDbContext>
     {
