@@ -7,6 +7,7 @@ namespace HomeTask.Domain.Aggregates.OrderAgg
     {
         public int Id { get; set; }
         public string Description { get; set; }
+        public int ClientId { get; set; }
 
         // -> navigation properties
         public virtual Client Client { get; set; }
