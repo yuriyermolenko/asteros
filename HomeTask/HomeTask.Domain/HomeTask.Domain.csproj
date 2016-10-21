@@ -55,6 +55,8 @@
     <Compile Include="Specifications\Base\ParameterRebinder.cs" />
     <Compile Include="Specifications\Base\Specification.cs" />
     <Compile Include="Specifications\Base\TrueSpecification.cs" />
+    <Compile Include="Specifications\ClientSpecifications.cs" />
+    <Compile Include="Specifications\OrderSpecifications.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -46,21 +46,37 @@
   <ItemGroup>
     <Compile Include="DTO\Client\ClientDTO.cs" />
     <Compile Include="DTO\Client\CreateClientRequest.cs" />
+    <Compile Include="DTO\Order\CreateOrderRequest.cs" />
+    <Compile Include="DTO\Order\OrderDTO.cs" />
+    <Compile Include="DTO\Order\UpdateOrderRequest.cs" />
+    <Compile Include="Exceptions\HomeTaskException.cs" />
+    <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ClientAgg\ClientService.cs" />
     <Compile Include="Services\ClientAgg\IClientService.cs" />
     <Compile Include="Services\OrderAgg\IOrderService.cs" />
+    <Compile Include="Services\OrderAgg\OrderService.cs" />
     <Compile Include="TypeAdapter\FastMapperTypeAdapter.cs" />
     <Compile Include="TypeAdapter\ITypeAdapter.cs" />
     <Compile Include="TypeAdapter\ITypeAdapterProfile.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="DTO\Order\" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\HomeTask.Domain.Contracts\HomeTask.Domain.Contracts.csproj">
+      <Project>{715D48BF-A461-4AAD-840C-9E7D5FE83E72}</Project>
+      <Name>HomeTask.Domain.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HomeTask.Domain\HomeTask.Domain.csproj">
+      <Project>{981AF4D5-C1B4-4662-8786-829A988A13FE}</Project>
+      <Name>HomeTask.Domain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HomeTask.Infrastructure\HomeTask.Infrastructure.csproj">
       <Project>{F5260FCC-B286-4103-A6B2-4B5370599A7A}</Project>
       <Name>HomeTask.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HomeTask.Persistence\HomeTask.Persistence.csproj">
+      <Project>{244EA500-53BF-4CD0-B367-9CF89313104F}</Project>
+      <Name>HomeTask.Persistence</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -7,9 +7,9 @@
             return FastMapper.TypeAdapter.Adapt<TSource, TResult>(source);
         }
 
-        public void Update<TSource, TResult>(TSource source, TResult result)
+        public void Update<TSource, TResult>(TSource source, TResult destination)
         {
-            FastMapper.TypeAdapter.Adapt(source, result);
+            FastMapper.TypeAdapter.Adapt(source, destination);
         }
     }
 }
