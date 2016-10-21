@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using HomeTask.Application.DTO.Order;
+using HomeTask.Application.Services.Base;
 
 namespace HomeTask.Application.Services.OrderAgg
 {

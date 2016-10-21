@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HomeTask.Application.DTO.Client;
 using HomeTask.Application.Exceptions;
+using HomeTask.Application.Services.Base;
 using HomeTask.Application.TypeAdapter;
 using HomeTask.Domain.Aggregates.ClientAgg;
 using HomeTask.Domain.Contracts.Events.Client;
@@ -14,7 +15,7 @@ using MyDeals.DataAccess.UnitOfWork;
 
 namespace HomeTask.Application.Services.ClientAgg
 {
-    public class ClientService : IClientService
+    public class ClientService : IClientService, IApplicationService
     {
         private static readonly ILogger Logger = LoggerFactory.CreateLog();
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HomeTask.Application.DTO.Order;
 using HomeTask.Application.Exceptions;
+using HomeTask.Application.Services.Base;
 using HomeTask.Application.TypeAdapter;
 using HomeTask.Domain.Aggregates.OrderAgg;
 using HomeTask.Domain.Contracts.Events.Order;
@@ -14,7 +15,7 @@ using MyDeals.DataAccess.UnitOfWork;
 
 namespace HomeTask.Application.Services.OrderAgg
 {
-    public class OrderService : IOrderService
+    public class OrderService : IOrderService, IApplicationService
     {
         private static readonly ILogger Logger = LoggerFactory.CreateLog();
 
