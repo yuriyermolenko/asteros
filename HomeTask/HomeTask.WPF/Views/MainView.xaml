@@ -29,8 +29,8 @@
                       AlternatingRowBackground="WhiteSmoke"
                       CanUserAddRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="7*" HeaderStyle="{StaticResource HeaderCenterAligned}"/>
-                <DataGridTextColumn Header="VIP" Binding="{Binding VIP}" Width="*" CellStyle="{StaticResource CellCenterAligned}" HeaderStyle="{StaticResource HeaderCenterAligned}"/>
+                <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="7*" HeaderStyle="{StaticResource HeaderCenterAligned}" IsReadOnly="True"/>
+                <DataGridCheckBoxColumn Header="VIP" Binding="{Binding VIP}" Width="*" CellStyle="{StaticResource CellCenterAligned}" HeaderStyle="{StaticResource HeaderCenterAligned}" IsReadOnly="True"/>
                 <DataGridTemplateColumn Header="Actions" Width="auto" HeaderStyle="{StaticResource HeaderCenterAligned}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

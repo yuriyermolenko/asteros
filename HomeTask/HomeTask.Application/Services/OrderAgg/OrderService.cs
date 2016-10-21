@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using HomeTask.Application.DTO.Order;
 using HomeTask.Application.Exceptions;
 using HomeTask.Application.TypeAdapter;
@@ -72,6 +73,11 @@ namespace HomeTask.Application.Services.OrderAgg
             return order.Id;
         }
 
+        public Task<int> CreateAsync(CreateOrderRequest request)
+        {
+            return Task.Run(() => Create(request));
+        }
+
         public void Update(UpdateOrderRequest request)
         {
             Logger.Debug($"OrderService: Updating order id {request.Id} " +
@@ -115,6 +121,11 @@ namespace HomeTask.Application.Services.OrderAgg
             }
         }
 
+        public Task UpdateAsync(UpdateOrderRequest request)
+        {
+            return Task.Run(() => Update(request));
+        }
+
         public void Delete(int orderId)
         {
             Logger.Debug($"OrderService: Deleting order Id {orderId}");
@@ -151,6 +162,11 @@ namespace HomeTask.Application.Services.OrderAgg
             }
         }
 
+        public Task DeleteAsync(int orderId)
+        {
+            return Task.Run(() => DeleteAsync(orderId));
+        }
+
         public IEnumerable<OrderDTO> GetForClient(int clientId)
         {
             Logger.Debug($"LotService: Retrieving orders for {clientId}");
@@ -161,6 +177,11 @@ namespace HomeTask.Application.Services.OrderAgg
 
                 return result.Select(elem => _typeAdapter.Create<Order, OrderDTO>(elem));
             }
+        }
+
+        public Task<IEnumerable<OrderDTO>> GetForClientAsync(int clientId)
+        {
+            return Task.Run(() => GetForClientAsync(clientId));
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using HomeTask.Application.DTO.Client;
 using HomeTask.Application.Exceptions;
 using HomeTask.Application.TypeAdapter;
@@ -72,6 +73,11 @@ namespace HomeTask.Application.Services.ClientAgg
             return client.Id;
         }
 
+        public Task<int> CreateAsync(CreateClientRequest request)
+        {
+            return Task.Run(() => Create(request));
+        }
+
         public void Delete(int clientId)
         {
             Logger.Debug($"LotService: Deleting client Id {clientId}");
@@ -108,6 +114,11 @@ namespace HomeTask.Application.Services.ClientAgg
             }
         }
 
+        public Task DeleteAsync(int clientId)
+        {
+            return Task.Run(() => Delete(clientId));
+        }
+
         public IEnumerable<ClientDTO> GetAll()
         {
             Logger.Debug("LotService: Retrieving all the clients");
@@ -118,6 +129,11 @@ namespace HomeTask.Application.Services.ClientAgg
 
                 return result.Select(elem => _typeAdapter.Create<Client, ClientDTO>(elem));
             }
+        }
+
+        public Task<IEnumerable<ClientDTO>> GetAllAsync()
+        {
+            return Task.Run(() => GetAll());
         }
     }
 }
