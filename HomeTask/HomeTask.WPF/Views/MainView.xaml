@@ -7,6 +7,40 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        
+        <Grid.Resources>
+            <Style x:Key="CellCenterAligned" TargetType="DataGridCell">
+                <Style.Setters>
+                    <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                </Style.Setters>
+            </Style>
+            <Style x:Key="HeaderCenterAligned" TargetType="DataGridColumnHeader">
+                <Style.Setters>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style.Setters>
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <DataGrid Grid.Row="0" Name="dgClients" ItemsSource="{Binding ClientsCollection}"  Margin="3,3,3,3"
+                      AutoGenerateColumns="False"
+                      AlternationCount="2" 
+                      AlternatingRowBackground="WhiteSmoke"
+                      CanUserAddRows="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="7*" HeaderStyle="{StaticResource HeaderCenterAligned}"/>
+                <DataGridTextColumn Header="VIP" Binding="{Binding VIP}" Width="*" CellStyle="{StaticResource CellCenterAligned}" HeaderStyle="{StaticResource HeaderCenterAligned}"/>
+                <DataGridTemplateColumn Header="Actions" Width="auto" HeaderStyle="{StaticResource HeaderCenterAligned}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Margin="3,3,3,3" Width="80" Content="Delete"  Command="{Binding Path=DataContext.Delete, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate >
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>

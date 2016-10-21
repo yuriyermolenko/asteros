@@ -1,6 +1,4 @@
-﻿using HomeTask.Persistence.UnitOfWork;
-
-namespace MyDeals.DataAccess.UnitOfWork
+﻿namespace HomeTask.Persistence.UnitOfWork
 {
     public interface IUnitOfWork
     {

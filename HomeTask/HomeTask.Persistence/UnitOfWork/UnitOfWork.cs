@@ -1,5 +1,4 @@
 ﻿using System;
-using MyDeals.DataAccess.UnitOfWork;
 
 namespace HomeTask.Persistence.UnitOfWork
 {

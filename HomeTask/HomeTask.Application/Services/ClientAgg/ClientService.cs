@@ -11,7 +11,7 @@ using HomeTask.Domain.Specifications;
 using HomeTask.Infrastructure.Logging.Base;
 using HomeTask.Infrastructure.Messaging.Base;
 using HomeTask.Persistence.Repositories;
-using MyDeals.DataAccess.UnitOfWork;
+using HomeTask.Persistence.UnitOfWork;
 
 namespace HomeTask.Application.Services.ClientAgg
 {

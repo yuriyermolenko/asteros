@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data.Entity;
+using HomeTask.Persistence.Migrations;
 
 namespace HomeTask.Persistence
 {
-    //public class HomeTaskDbInitializer : IDatabaseInitializer<HomeTaskDbContext>
-    //{
-    //    public void InitializeDatabase(HomeTaskDbContext context)
-    //    {
-    //        var createDb = new MigrateDatabaseToLatestVersion<HomeTaskDbContext, Configuration>();
-    //        createDb.InitializeDatabase(context);
-    //    }
-    //}
+    public class HomeTaskDbInitializer : IDatabaseInitializer<HomeTaskDbContext>
+    {
+        public void InitializeDatabase(HomeTaskDbContext context)
+        {
+            var createDb = new MigrateDatabaseToLatestVersion<HomeTaskDbContext, Configuration>();
+            createDb.InitializeDatabase(context);
+        }
+    }
 }

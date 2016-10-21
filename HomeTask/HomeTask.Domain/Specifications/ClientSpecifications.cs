@@ -1,4 +1,5 @@
-﻿using HomeTask.Domain.Aggregates.ClientAgg;
+﻿using System;
+using HomeTask.Domain.Aggregates.ClientAgg;
 using HomeTask.Domain.Specifications.Base;
 
 namespace HomeTask.Domain.Specifications
@@ -13,6 +14,11 @@ namespace HomeTask.Domain.Specifications
         public static Specification<Client> Any()
         {
             return new TrueSpecification<Client>();
+        }
+
+        public static Specification<Client> ByAddress(string address)
+        {
+            return new DirectSpecification<Client>(c => c.Address == address);
         }
     }
 }

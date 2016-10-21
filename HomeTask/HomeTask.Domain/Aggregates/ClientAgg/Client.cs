@@ -15,7 +15,7 @@ namespace HomeTask.Domain.Aggregates.ClientAgg
 
         public Client()
         {
-            this.Orders = new List<Order>();
+            Orders = new List<Order>();
         }
     }
 }
