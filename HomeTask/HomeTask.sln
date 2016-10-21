@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeTask.Domain", "HomeTask
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeTask.Domain.Contracts", "HomeTask.Domain.Contracts\HomeTask.Domain.Contracts.csproj", "{715D48BF-A461-4AAD-840C-9E7D5FE83E72}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeTask.Infrastructure", "HomeTask.Infrastructure\HomeTask.Infrastructure.csproj", "{F5260FCC-B286-4103-A6B2-4B5370599A7A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{715D48BF-A461-4AAD-840C-9E7D5FE83E72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{715D48BF-A461-4AAD-840C-9E7D5FE83E72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{715D48BF-A461-4AAD-840C-9E7D5FE83E72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5260FCC-B286-4103-A6B2-4B5370599A7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5260FCC-B286-4103-A6B2-4B5370599A7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5260FCC-B286-4103-A6B2-4B5370599A7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5260FCC-B286-4103-A6B2-4B5370599A7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
