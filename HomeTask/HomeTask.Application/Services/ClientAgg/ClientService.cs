@@ -11,29 +11,25 @@ using HomeTask.Domain.Specifications;
 using HomeTask.Infrastructure.Logging.Base;
 using HomeTask.Infrastructure.Messaging.Base;
 using HomeTask.Persistence.Repositories;
-using HomeTask.Persistence.UnitOfWork;
 
 namespace HomeTask.Application.Services.ClientAgg
 {
-    public class ClientService : IClientService, IApplicationService
+    public class ClientService : IClientService
     {
         private static readonly ILogger Logger = LoggerFactory.CreateLog();
 
         private readonly IRepository<Client> _clientRepository;
         private readonly ITypeAdapter _typeAdapter;
         private readonly IEventBus _eventBus;
-        private readonly IUnitOfWork _unitOfWork;
 
         public ClientService(
             IRepository<Client> clientRepository,
             ITypeAdapter typeAdapter,
-            IEventBus eventBus,
-            IUnitOfWork unitOfWork)
+            IEventBus eventBus)
         {
             _clientRepository = clientRepository;
             _typeAdapter = typeAdapter;
             _eventBus = eventBus;
-            _unitOfWork = unitOfWork;
         }
 
         public int Create(CreateClientRequest request)
@@ -47,8 +43,7 @@ namespace HomeTask.Application.Services.ClientAgg
             try
             {
                 _clientRepository.Insert(client);
-
-                _unitOfWork.Commit();
+                _clientRepository.Commit();
             }
             catch (Exception ex)
             {
@@ -88,8 +83,7 @@ namespace HomeTask.Application.Services.ClientAgg
             try
             {
                 _clientRepository.Delete(client);
-
-                _unitOfWork.Commit();
+                _clientRepository.Commit();
             }
             catch (Exception ex)
             {
@@ -111,6 +105,11 @@ namespace HomeTask.Application.Services.ClientAgg
             var result = _clientRepository.Find(ClientSpecifications.Any());
 
             return result.Select(elem => _typeAdapter.Create<Client, ClientDTO>(elem));
+        }
+
+        public void Dispose()
+        {
+            _clientRepository?.Dispose();
         }
     }
 }

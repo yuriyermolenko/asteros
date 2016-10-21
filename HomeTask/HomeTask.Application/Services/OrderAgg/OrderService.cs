@@ -11,29 +11,25 @@ using HomeTask.Domain.Specifications;
 using HomeTask.Infrastructure.Logging.Base;
 using HomeTask.Infrastructure.Messaging.Base;
 using HomeTask.Persistence.Repositories;
-using HomeTask.Persistence.UnitOfWork;
 
 namespace HomeTask.Application.Services.OrderAgg
 {
-    public class OrderService : IOrderService, IApplicationService
+    public class OrderService : IOrderService
     {
         private static readonly ILogger Logger = LoggerFactory.CreateLog();
 
         private readonly IRepository<Order> _orderRepository;
         private readonly ITypeAdapter _typeAdapter;
         private readonly IEventBus _eventBus;
-        private readonly IUnitOfWork _unitOfWork;
 
         public OrderService(
             IRepository<Order> orderRepository,
             ITypeAdapter typeAdapter,
-            IEventBus eventBus,
-            IUnitOfWork unitOfWork)
+            IEventBus eventBus)
         {
             _orderRepository = orderRepository;
             _typeAdapter = typeAdapter;
             _eventBus = eventBus;
-            _unitOfWork = unitOfWork;
         }
 
         public int Create(CreateOrderRequest request)
@@ -47,7 +43,7 @@ namespace HomeTask.Application.Services.OrderAgg
             try
             {
                 _orderRepository.Insert(order);
-                _unitOfWork.Commit();
+                _orderRepository.Commit();
             }
             catch (Exception ex)
             {
@@ -89,7 +85,7 @@ namespace HomeTask.Application.Services.OrderAgg
             try
             {
                 _typeAdapter.Update(request, order);
-                _unitOfWork.Commit();
+                _orderRepository.Commit();
             }
             catch (Exception ex)
             {
@@ -127,7 +123,7 @@ namespace HomeTask.Application.Services.OrderAgg
             try
             {
                 _orderRepository.Delete(order);
-                _unitOfWork.Commit();
+                _orderRepository.Commit();
             }
             catch (Exception ex)
             {
@@ -149,6 +145,11 @@ namespace HomeTask.Application.Services.OrderAgg
             var result = _orderRepository.Find(OrderSpecifications.ByClientId(clientId));
 
             return result.Select(elem => _typeAdapter.Create<Order, OrderDTO>(elem));
+        }
+
+        public void Dispose()
+        {
+            _orderRepository?.Dispose();
         }
     }
 }

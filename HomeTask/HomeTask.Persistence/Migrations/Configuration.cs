@@ -2,7 +2,6 @@ using HomeTask.Domain.Aggregates.Base;
 using HomeTask.Domain.Aggregates.ClientAgg;
 using HomeTask.Domain.Specifications;
 using HomeTask.Persistence.Repositories;
-using HomeTask.Persistence.UnitOfWork;
 
 namespace HomeTask.Persistence.Migrations
 {
@@ -41,8 +40,7 @@ namespace HomeTask.Persistence.Migrations
 
         private static IRepository<T> CreateRepository<T>(HomeTaskDbContext context) where T : class, IEntity
         {
-            var dbAdapter = new DbContextAdapter(context);
-            return new Repository<T>(dbAdapter);
+            return new Repository<T>(context);
         }
     }
 }

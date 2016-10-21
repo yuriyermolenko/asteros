@@ -10,7 +10,6 @@ using HomeTask.Infrastructure.Messaging.Base;
 using HomeTask.Infrastructure.Messaging.InMemory;
 using HomeTask.Persistence;
 using HomeTask.Persistence.Repositories;
-using HomeTask.Persistence.UnitOfWork;
 using HomeTask.WPF.ViewModels;
 using HomeTask.WPF.Views;
 using SimpleInjector;
@@ -38,15 +37,7 @@ namespace HomeTask.WPF
             var container = new Container();
 
             // data access
-            //container.Register<IDatabaseInitializer<HomeTaskDbContext>, HomeTaskDbInitializer>();
-            container.Register<HomeTaskDbContext>();
-
             container.Register<DbContext, HomeTaskDbContext>();
-            container.Register<DbContextAdapter>();
-
-            container.Register<IObjectSetFactory, DbContextAdapter>();
-            container.Register<IObjectContext, DbContextAdapter>();
-            container.Register<IUnitOfWork, UnitOfWork>();
 
             container.Register(typeof(IRepository<>), typeof(Repository<>));
 
@@ -57,20 +48,11 @@ namespace HomeTask.WPF
             container.Register<IOrderService, OrderService>();
 
             // infrastructure
-            container.Register<IEventBus, InMemoryEventBus>();
+            container.Register<IEventBus, InMemoryEventBus>(Lifestyle.Singleton);
 
             // Register your windows and view models:
             container.Register<MainView>();
             container.Register<IMainViewModel, MainViewModel>();
-
-            //Registration registration1 = container.GetRegistration(typeof(DbContext)).Registration;
-            //registration1.SuppressDiagnosticWarning(DiagnosticType.DisposableTransientComponent, "Dispose called by application code");
-
-            //Registration registration2 = container.GetRegistration(typeof(IObjectSetFactory)).Registration;
-            //registration2.SuppressDiagnosticWarning(DiagnosticType.DisposableTransientComponent, "Dispose called by application code");
-
-            //Registration registration3 = container.GetRegistration(typeof(IObjectContext)).Registration;
-            //registration3.SuppressDiagnosticWarning(DiagnosticType.DisposableTransientComponent, "Dispose called by application code");
 
             //container.Verify();
 

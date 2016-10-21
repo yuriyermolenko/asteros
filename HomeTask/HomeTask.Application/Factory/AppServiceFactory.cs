@@ -1,4 +1,5 @@
-﻿using SimpleInjector;
+﻿using HomeTask.Application.Services.Base;
+using SimpleInjector;
 
 namespace HomeTask.Application.Factory
 {
@@ -11,7 +12,7 @@ namespace HomeTask.Application.Factory
             _container = container;
         }
 
-        public T Create<T>() where T : class 
+        public T Create<T>() where T : class, IApplicationService
         {
             return _container.GetInstance<T>();
         }

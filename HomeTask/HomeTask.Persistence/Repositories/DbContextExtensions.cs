@@ -2,7 +2,7 @@
 using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 
-namespace HomeTask.Persistence.UnitOfWork
+namespace HomeTask.Persistence.Repositories
 {
     public static class DbContextExtensions
     {

@@ -37,10 +37,13 @@ namespace HomeTask.WPF.ViewModels
             _serviceFactory = serviceFactory;
             _typeAdapter = typeAdapter;
 
-            var clients = serviceFactory.Create<IClientService>().GetAll();
+            using (var clientService = serviceFactory.Create<IClientService>())
+            {
+                var clients = clientService.GetAll();
 
-            _clientsCollection = new ObservableCollection<ClientObservable>(
+                _clientsCollection = new ObservableCollection<ClientObservable>(
                     _typeAdapter.Create<IEnumerable<ClientDTO>, IEnumerable<ClientObservable>>(clients));
+            }
         }
     }
 }
