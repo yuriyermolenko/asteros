@@ -47,6 +47,8 @@ namespace HomeTask.Application.Services.ClientAgg
                 unitOfWork = _unitOfWorkFactory.CreateScope();
 
                 unitOfWork.ClientRepository.Insert(client);
+                unitOfWork.Commit();
+
             }
             catch (Exception ex)
             {
@@ -63,19 +65,47 @@ namespace HomeTask.Application.Services.ClientAgg
                 unitOfWork?.Dispose();
             }
 
-            Logger.LogInfo("LotService: New client created " +
-                           $"Address : {request.Address} " +
-                           $"VIP: {request.VIP}");
-
-            _eventBus.Publish(_typeAdapter.Create<Client, ClientCreated>(client));
+            InformCreated(request, client);
 
             return client.Id;
         }
 
         // fake-async
-        public Task<int> CreateAsync(CreateClientRequest request)
+        public async Task<int> CreateAsync(CreateClientRequest request)
         {
-            return Task.Run(() => Create(request));
+            Logger.Debug("LotService: Creating new client async" +
+                         $"Address : {request.Address} " +
+                         $"VIP: {request.VIP}");
+
+            var client = _typeAdapter.Create<CreateClientRequest, Client>(request);
+
+            IUnitOfWork unitOfWork = null;
+
+            try
+            {
+                unitOfWork = _unitOfWorkFactory.CreateScope();
+
+                unitOfWork.ClientRepository.Insert(client);
+                await unitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                var message = "Failed to create new client async" +
+                              $"Address : {request.Address} " +
+                              $"VIP: {request.VIP}";
+
+                Logger.LogError("LotService: " + message, ex);
+
+                throw new HomeTaskException(message, ex);
+            }
+            finally
+            {
+                unitOfWork?.Dispose();
+            }
+
+            InformCreated(request, client);
+
+            return client.Id;
         }
 
         public void Delete(int clientId)
@@ -84,16 +114,7 @@ namespace HomeTask.Application.Services.ClientAgg
 
             using (var unitOfWork = _unitOfWorkFactory.CreateScope())
             {
-                var client = unitOfWork.ClientRepository.FirstOrDefault(ClientSpecifications.ById(clientId));
-
-                if (client == null)
-                {
-                    var message = $"Unable to find client Id {clientId}";
-
-                    Logger.LogWarning($"LotService: " + message);
-
-                    throw new NotFoundException(message);
-                }
+                var client = EnsureClientExistence(clientId, unitOfWork);
 
                 try
                 {
@@ -108,16 +129,33 @@ namespace HomeTask.Application.Services.ClientAgg
                     throw new HomeTaskException(ex.Message, ex);
                 }
 
-                Logger.LogInfo($"LotService: Client Id {clientId} deleted");
-
-                _eventBus.Publish(_typeAdapter.Create<Client, ClientDeleted>(client));
+                InformDeleted(clientId, client);
             }
         }
 
-        // fake-async
-        public Task DeleteAsync(int clientId)
+        public async Task DeleteAsync(int clientId)
         {
-            return Task.Run(() => Delete(clientId));
+            Logger.Debug($"LotService: Deleting client Id {clientId} async");
+
+            using (var unitOfWork = _unitOfWorkFactory.CreateScope())
+            {
+                var client = EnsureClientExistence(clientId, unitOfWork);
+
+                try
+                {
+                    unitOfWork.ClientRepository.Delete(client);
+                    await unitOfWork.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    var message = $"Failed to delete client Id {clientId} async";
+                    Logger.LogError($"LotService: " + message, ex);
+
+                    throw new HomeTaskException(ex.Message, ex);
+                }
+
+                InformDeleted(clientId, client);
+            }
         }
 
         public IEnumerable<ClientDTO> GetAll()
@@ -142,6 +180,38 @@ namespace HomeTask.Application.Services.ClientAgg
 
                 return result.Select(elem => _typeAdapter.Create<Client, ClientDTO>(elem));
             }
+        }
+
+        private static Client EnsureClientExistence(int clientId, IUnitOfWork unitOfWork)
+        {
+            var client = unitOfWork.ClientRepository.FirstOrDefault(ClientSpecifications.ById(clientId));
+
+            if (client == null)
+            {
+                var message = $"Unable to find client Id {clientId}";
+
+                Logger.LogWarning($"LotService: " + message);
+
+                throw new NotFoundException(message);
+            }
+
+            return client;
+        }
+
+        private void InformCreated(CreateClientRequest request, Client client)
+        {
+            Logger.LogInfo("LotService: New client created " +
+                           $"Address : {request.Address} " +
+                           $"VIP: {request.VIP}");
+
+            _eventBus.Publish(_typeAdapter.Create<Client, ClientCreated>(client));
+        }
+
+        private void InformDeleted(int clientId, Client client)
+        {
+            Logger.LogInfo($"LotService: Client Id {clientId} deleted");
+
+            _eventBus.Publish(_typeAdapter.Create<Client, ClientDeleted>(client));
         }
     }
 }

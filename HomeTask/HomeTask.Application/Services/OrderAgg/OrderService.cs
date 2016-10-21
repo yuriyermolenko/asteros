@@ -64,19 +64,46 @@ namespace HomeTask.Application.Services.OrderAgg
                 unitOfWork?.Dispose();
             }
 
-            Logger.LogInfo("OrderService: New order created for" +
-                           $"Client Id : {request.ClientId} " +
-                           $"Description: {request.Description}");
-
-            _eventBus.Publish(_typeAdapter.Create<Order, OrderCreated>(order));
+            InformCreated(request, order);
 
             return order.Id;
         }
 
-        // fake-async
-        public Task<int> CreateAsync(CreateOrderRequest request)
+        public async Task<int> CreateAsync(CreateOrderRequest request)
         {
-            return Task.Run(() => Create(request));
+            Logger.Debug("OrderService: Creating new order async for " +
+                         $"Client Id : {request.ClientId} " +
+                         $"Description: {request.Description}");
+
+            var order = _typeAdapter.Create<CreateOrderRequest, Order>(request);
+
+            IUnitOfWork unitOfWork = null;
+
+            try
+            {
+                unitOfWork = _unitOfWorkFactory.CreateScope();
+
+                unitOfWork.OrderRepository.Insert(order);
+                await unitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                var message = "Failed to create new order async for " +
+                              $"Client Id : {request.ClientId} " +
+                              $"Description: {request.Description}";
+
+                Logger.LogError("OrderService: " + message, ex);
+
+                throw new HomeTaskException(message, ex);
+            }
+            finally
+            {
+                unitOfWork?.Dispose();
+            }
+
+            InformCreated(request, order);
+
+            return order.Id;
         }
 
         public void Update(UpdateOrderRequest request)
@@ -87,16 +114,7 @@ namespace HomeTask.Application.Services.OrderAgg
 
             using (var unitOfWork = _unitOfWorkFactory.CreateScope())
             {
-                var order = unitOfWork.OrderRepository.FirstOrDefault(OrderSpecifications.ById(request.Id));
-
-                if (order == null)
-                {
-                    var message = $"Unable to find order Id {request.Id}";
-
-                    Logger.LogWarning($"OrderService: " + message);
-
-                    throw new NotFoundException(message);
-                }
+                var order = EnsureOrderExistence(request.Id, unitOfWork);
 
                 try
                 {
@@ -114,18 +132,38 @@ namespace HomeTask.Application.Services.OrderAgg
                     throw new HomeTaskException(ex.Message, ex);
                 }
 
-                Logger.LogInfo($"OrderService: Order id {request.Id} updated" +
-                    $"Client Id : {request.ClientId} " +
-                    $"Description: {request.Description}");
-
-                _eventBus.Publish(_typeAdapter.Create<Order, OrderUpdated>(order));
+                InformUpdated(request, order);
             }
         }
 
-        // fake-async
-        public Task UpdateAsync(UpdateOrderRequest request)
+        public async Task UpdateAsync(UpdateOrderRequest request)
         {
-            return Task.Run(() => Update(request));
+            Logger.Debug($"OrderService: Updating order id {request.Id} " +
+                 $"Client Id : {request.ClientId} " +
+                 $"Description: {request.Description}");
+
+            using (var unitOfWork = _unitOfWorkFactory.CreateScope())
+            {
+                var order = EnsureOrderExistence(request.Id, unitOfWork);
+
+                try
+                {
+                    _typeAdapter.Update(request, order);
+                    await unitOfWork.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    var message = $"Failed to update order Id {request.Id}" +
+                                  $"Client Id : {request.ClientId} " +
+                                  $"Description: {request.Description}";
+
+                    Logger.LogError($"OrderService: " + message, ex);
+
+                    throw new HomeTaskException(ex.Message, ex);
+                }
+
+                InformUpdated(request, order);
+            }
         }
 
         public void Delete(int orderId)
@@ -134,16 +172,7 @@ namespace HomeTask.Application.Services.OrderAgg
 
             using (var unitOfWork = _unitOfWorkFactory.CreateScope())
             {
-                var order = unitOfWork.OrderRepository.FirstOrDefault(OrderSpecifications.ById(orderId));
-
-                if (order == null)
-                {
-                    var message = $"Unable to find order Id {orderId}";
-
-                    Logger.LogWarning($"OrderService: " + message);
-
-                    throw new NotFoundException(message);
-                }
+                var order = EnsureOrderExistence(orderId, unitOfWork);
 
                 try
                 {
@@ -158,16 +187,33 @@ namespace HomeTask.Application.Services.OrderAgg
                     throw new HomeTaskException(ex.Message, ex);
                 }
 
-                Logger.LogInfo($"OrderService: Order Id {orderId} deleted");
-
-                _eventBus.Publish(_typeAdapter.Create<Order, OrderDeleted>(order));
+                InformDeleted(orderId, order);
             }
         }
 
-        // fake-async
-        public Task DeleteAsync(int orderId)
+        public async Task DeleteAsync(int orderId)
         {
-            return Task.Run(() => DeleteAsync(orderId));
+            Logger.Debug($"OrderService: Deleting order Id {orderId} async");
+
+            using (var unitOfWork = _unitOfWorkFactory.CreateScope())
+            {
+                var order = EnsureOrderExistence(orderId, unitOfWork);
+
+                try
+                {
+                    unitOfWork.OrderRepository.Delete(order);
+                    await unitOfWork.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    var message = $"Failed to delete order Id {orderId} async";
+                    Logger.LogError($"OrderService: " + message, ex);
+
+                    throw new HomeTaskException(ex.Message, ex);
+                }
+
+                InformDeleted(orderId, order);
+            }
         }
 
         public IEnumerable<OrderDTO> GetForClient(int clientId)
@@ -192,6 +238,46 @@ namespace HomeTask.Application.Services.OrderAgg
 
                 return result.Select(elem => _typeAdapter.Create<Order, OrderDTO>(elem));
             }
+        }
+
+        private static Order EnsureOrderExistence(int orderId, IUnitOfWork unitOfWork)
+        {
+            var order = unitOfWork.OrderRepository.FirstOrDefault(OrderSpecifications.ById(orderId));
+
+            if (order == null)
+            {
+                var message = $"Unable to find order Id {orderId}";
+
+                Logger.LogWarning($"OrderService: " + message);
+
+                throw new NotFoundException(message);
+            }
+            return order;
+        }
+
+        private void InformUpdated(UpdateOrderRequest request, Order order)
+        {
+            Logger.LogInfo($"OrderService: Order id {request.Id} updated" +
+                           $"Client Id : {request.ClientId} " +
+                           $"Description: {request.Description}");
+
+            _eventBus.Publish(_typeAdapter.Create<Order, OrderUpdated>(order));
+        }
+
+        private void InformDeleted(int orderId, Order order)
+        {
+            Logger.LogInfo($"OrderService: Order Id {orderId} deleted");
+
+            _eventBus.Publish(_typeAdapter.Create<Order, OrderDeleted>(order));
+        }
+
+        private void InformCreated(CreateOrderRequest request, Order order)
+        {
+            Logger.LogInfo("OrderService: New order created for" +
+                           $"Client Id : {request.ClientId} " +
+                           $"Description: {request.Description}");
+
+            _eventBus.Publish(_typeAdapter.Create<Order, OrderCreated>(order));
         }
     }
 }
