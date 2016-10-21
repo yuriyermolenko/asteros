@@ -1,6 +1,6 @@
-using ApplicationFramework.Infrastructure.Logging.Base;
+using HomeTask.Infrastructure.Logging.Base;
 
-namespace ApplicationFramework.Infrastructure.Logging.NLog
+namespace HomeTask.Infrastructure.Logging.NLog
 {
     public class NLogFactory : ILoggerFactory
     {

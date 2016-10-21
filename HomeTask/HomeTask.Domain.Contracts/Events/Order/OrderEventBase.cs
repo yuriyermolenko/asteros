@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using HomeTask.Domain.Contracts.Events.Base;
+﻿using HomeTask.Domain.Contracts.Events.Base;
 
 namespace HomeTask.Domain.Contracts.Events.Order
 {

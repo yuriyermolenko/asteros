@@ -3,7 +3,7 @@ using HomeTask.Domain.Aggregates.ClientAgg;
 
 namespace HomeTask.Domain.Aggregates.OrderAgg
 {
-    public class Order : IAggregateRoot<int>
+    public class Order : IEntity
     {
         public int Id { get; set; }
         public string Description { get; set; }

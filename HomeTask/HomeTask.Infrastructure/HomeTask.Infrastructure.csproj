@@ -47,6 +47,8 @@
     <Compile Include="Logging\Base\ILogger.cs" />
     <Compile Include="Logging\Base\ILoggerFactory.cs" />
     <Compile Include="Logging\Base\LoggerFactory.cs" />
+    <Compile Include="Logging\NLog\NLogFactory.cs" />
+    <Compile Include="Logging\NLog\NLogLogger.cs" />
     <Compile Include="Messaging\Base\Envelope.cs" />
     <Compile Include="Messaging\Base\IEventBus.cs" />
     <Compile Include="Messaging\Base\IEventHandler.cs" />
@@ -55,9 +57,7 @@
     <Compile Include="Messaging\InMemory\InMemoryEventBus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Logging\NLog\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\HomeTask.Domain.Contracts\HomeTask.Domain.Contracts.csproj">
       <Project>{715D48BF-A461-4AAD-840C-9E7D5FE83E72}</Project>
