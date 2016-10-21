@@ -182,10 +182,16 @@ namespace HomeTask.Application.Services.OrderAgg
             }
         }
 
-        // fake-async
-        public Task<IEnumerable<OrderDTO>> GetForClientAsync(int clientId)
+        public async Task<IEnumerable<OrderDTO>> GetForClientAsync(int clientId)
         {
-            return Task.Run(() => GetForClientAsync(clientId));
+            Logger.Debug($"LotService: Retrieving orders for {clientId} async");
+
+            using (var unitOfWork = _unitOfWorkFactory.CreateScope())
+            {
+                var result = await unitOfWork.OrderRepository.FindAsync(OrderSpecifications.ByClientId(clientId));
+
+                return result.Select(elem => _typeAdapter.Create<Order, OrderDTO>(elem));
+            }
         }
     }
 }

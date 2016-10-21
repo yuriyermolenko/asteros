@@ -132,11 +132,16 @@ namespace HomeTask.Application.Services.ClientAgg
             }
         }
 
-
-        // fake-async
-        public Task<IEnumerable<ClientDTO>> GetAllAsync()
+        public async Task<IEnumerable<ClientDTO>> GetAllAsync()
         {
-            return Task.Run(() => GetAll());
+            Logger.Debug("LotService: Retrieving all the clients async");
+
+            using (var unitOfWork = _unitOfWorkFactory.CreateScope())
+            {
+                var result = await unitOfWork.ClientRepository.FindAsync(ClientSpecifications.Any());
+
+                return result.Select(elem => _typeAdapter.Create<Client, ClientDTO>(elem));
+            }
         }
     }
 }

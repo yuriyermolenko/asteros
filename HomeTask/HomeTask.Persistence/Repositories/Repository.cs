@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using HomeTask.Domain.Aggregates.Base;
 using HomeTask.Domain.Specifications.Base;
 using HomeTask.Persistence.Context;
@@ -19,26 +20,32 @@ namespace HomeTask.Persistence.Repositories
             _dbSet = dbContext.Set<TEntity>();
         }
 
-        public IEnumerable<TEntity> Find(params Specification<TEntity>[] specifications)
+        public List<TEntity> Find(params Specification<TEntity>[] specifications)
         {
-            var query = AsQueryable();
-
-            query = specifications.Aggregate(
-                query, (current, spec) =>
-                current.Where(spec.SatisfiedBy()));
+            var query = BuildQuery(specifications);
 
             return query.ToList();
         }
 
+        public Task<List<TEntity>> FindAsync(params Specification<TEntity>[] specifications)
+        {
+            var query = BuildQuery(specifications);
+
+            return query.ToListAsync();
+        }
+
         public TEntity FirstOrDefault(params Specification<TEntity>[] specifications)
         {
-            var query = AsQueryable();
-
-            query = specifications.Aggregate(
-                query, (current, spec) =>
-                current.Where(spec.SatisfiedBy()));
+            var query = BuildQuery(specifications);
 
             return query.FirstOrDefault();
+        }
+
+        public Task<TEntity> FirstOrDefaultAsync(params Specification<TEntity>[] specifications)
+        {
+            var query = BuildQuery(specifications);
+
+            return query.FirstOrDefaultAsync();
         }
 
         public void Delete(TEntity entity)
@@ -64,6 +71,16 @@ namespace HomeTask.Persistence.Repositories
         public void Dispose()
         {
             _dbContext?.Dispose();
+        }
+
+        private IQueryable<TEntity> BuildQuery(Specification<TEntity>[] specifications)
+        {
+            var query = AsQueryable();
+
+            query = specifications.Aggregate(
+                query, (current, spec) =>
+                    current.Where(spec.SatisfiedBy()));
+            return query;
         }
     }
 }
