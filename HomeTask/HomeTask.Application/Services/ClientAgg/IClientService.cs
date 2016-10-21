@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using HomeTask.Application.DTO.Client;
-using HomeTask.Application.Services.Base;
 
 namespace HomeTask.Application.Services.ClientAgg
 {

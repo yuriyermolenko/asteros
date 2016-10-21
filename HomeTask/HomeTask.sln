@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeTask.Persistence", "Hom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeTask.Application", "HomeTask.Application\HomeTask.Application.csproj", "{3072F6E9-F839-47A6-8220-EDA646FD4D29}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeTask.WPF", "HomeTask.WPF\HomeTask.WPF.csproj", "{D3A4ADD1-B968-40E5-9778-7662627E7A07}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{3072F6E9-F839-47A6-8220-EDA646FD4D29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3072F6E9-F839-47A6-8220-EDA646FD4D29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3072F6E9-F839-47A6-8220-EDA646FD4D29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3A4ADD1-B968-40E5-9778-7662627E7A07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3A4ADD1-B968-40E5-9778-7662627E7A07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3A4ADD1-B968-40E5-9778-7662627E7A07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3A4ADD1-B968-40E5-9778-7662627E7A07}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
