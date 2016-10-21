@@ -1,5 +1,5 @@
-﻿using HomeTask.Domain.Aggregates.ClientAgg;
-using HomeTask.Domain.Base;
+﻿using HomeTask.Domain.Aggregates.Base;
+using HomeTask.Domain.Aggregates.ClientAgg;
 
 namespace HomeTask.Domain.Aggregates.OrderAgg
 {

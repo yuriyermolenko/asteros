@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using HomeTask.Domain.Aggregates.Base;
 using HomeTask.Domain.Aggregates.OrderAgg;
-using HomeTask.Domain.Base;
 
 namespace HomeTask.Domain.Aggregates.ClientAgg
 {

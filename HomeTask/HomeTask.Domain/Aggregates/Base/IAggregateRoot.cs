@@ -1,4 +1,4 @@
-﻿namespace HomeTask.Domain.Base
+﻿namespace HomeTask.Domain.Aggregates.Base
 {
     public interface IAggregateRoot<T>
     {
