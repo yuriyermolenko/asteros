@@ -6,7 +6,8 @@ namespace HomeTask.Persistence
     public class HomeTaskDbContext : DbContext
     {
         public HomeTaskDbContext()
-            : base("HomeTaskConnection")
+            //: base("HomeTaskConnection")
+            : base(@"Data Source = (local)\SQLEXPRESS;Initial Catalog = HomeTask;Integrated Security=True")
         {
         }
 
@@ -16,15 +17,11 @@ namespace HomeTask.Persistence
             Database.SetInitializer<HomeTaskDbContext>(initializer);
         }
 
-        #region Protected methods
-
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.Add(new ClientConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }
-
-        #endregion
     }
 }

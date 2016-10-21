@@ -13,7 +13,7 @@ namespace HomeTask.Persistence.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201610211017373_Initial"; }
+            get { return "201610211023363_Initial"; }
         }
         
         string IMigrationMetadata.Source

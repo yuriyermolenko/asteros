@@ -10,11 +10,13 @@ namespace HomeTask.Persistence.Mappings
         {
             ToTable(MappingConstants.Tables.Clients);
 
-            HasKey(e => e.Id);
-            Property(p => p.Id)
+            HasKey(c => c.Id);
+            Property(c => c.Id)
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
-            Property(e => e.Address).HasMaxLength(100).IsRequired();
+            Property(c => c.Address).HasMaxLength(100).IsRequired();
+
+            HasMany(c => c.Orders).WithRequired(o => o.Client).HasForeignKey(o => o.ClientId);
         }
     }
 }
