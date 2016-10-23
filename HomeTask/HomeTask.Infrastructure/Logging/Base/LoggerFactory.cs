@@ -11,7 +11,7 @@ namespace HomeTask.Infrastructure.Logging.Base
 
         public static ILogger CreateLog()
         {
-            return _currentLogFactory?.Create();
+            return _currentLogFactory != null ? _currentLogFactory.Create() : null;
         }
     }
 }

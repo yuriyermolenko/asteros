@@ -13,7 +13,7 @@ namespace HomeTask.Domain.Specifications.Base
         {
             if (originalSpecification == null)
             {
-                throw new ArgumentNullException(nameof(originalSpecification));
+                throw new ArgumentNullException("originalSpecification");
             }
 
             _originalCriteria = originalSpecification.SatisfiedBy();
@@ -23,7 +23,7 @@ namespace HomeTask.Domain.Specifications.Base
         {
             if (originalSpecification == null)
             {
-                throw new ArgumentNullException(nameof(originalSpecification));
+                throw new ArgumentNullException("originalSpecification");
             }
 
             _originalCriteria = originalSpecification;

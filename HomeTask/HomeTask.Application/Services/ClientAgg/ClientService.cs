@@ -35,8 +35,8 @@ namespace HomeTask.Application.Services.ClientAgg
         public int Create(CreateClientRequest request)
         {
             Logger.Debug("LotService: Creating new client " +
-                         $"Address : {request.Address} " +
-                         $"VIP: {request.VIP}");
+                         "Address : {request.Address} " +
+                         "VIP: {request.VIP}");
 
             var client = _typeAdapter.Create<CreateClientRequest, Client>(request);
 
@@ -53,8 +53,8 @@ namespace HomeTask.Application.Services.ClientAgg
             catch (Exception ex)
             {
                 var message = "Failed to create new client " +
-                              $"Address : {request.Address} " +
-                              $"VIP: {request.VIP}";
+                              "Address : {request.Address} " +
+                              "VIP: {request.VIP}";
 
                 Logger.LogError("LotService: " + message, ex);
 
@@ -62,7 +62,10 @@ namespace HomeTask.Application.Services.ClientAgg
             }
             finally
             {
-                unitOfWork?.Dispose();
+                if (unitOfWork != null)
+                {
+                    unitOfWork.Dispose();
+                }
             }
 
             InformCreated(request, client);
@@ -74,8 +77,8 @@ namespace HomeTask.Application.Services.ClientAgg
         public async Task<int> CreateAsync(CreateClientRequest request)
         {
             Logger.Debug("LotService: Creating new client async" +
-                         $"Address : {request.Address} " +
-                         $"VIP: {request.VIP}");
+                         "Address : {request.Address} " +
+                         "VIP: {request.VIP}");
 
             var client = _typeAdapter.Create<CreateClientRequest, Client>(request);
 
@@ -91,8 +94,8 @@ namespace HomeTask.Application.Services.ClientAgg
             catch (Exception ex)
             {
                 var message = "Failed to create new client async" +
-                              $"Address : {request.Address} " +
-                              $"VIP: {request.VIP}";
+                              "Address : {request.Address} " +
+                              "VIP: {request.VIP}";
 
                 Logger.LogError("LotService: " + message, ex);
 
@@ -100,7 +103,10 @@ namespace HomeTask.Application.Services.ClientAgg
             }
             finally
             {
-                unitOfWork?.Dispose();
+                if (unitOfWork != null)
+                {
+                    unitOfWork.Dispose();
+                }
             }
 
             InformCreated(request, client);
@@ -110,7 +116,7 @@ namespace HomeTask.Application.Services.ClientAgg
 
         public void Delete(int clientId)
         {
-            Logger.Debug($"LotService: Deleting client Id {clientId}");
+            Logger.Debug("LotService: Deleting client Id {clientId}");
 
             using (var unitOfWork = _unitOfWorkFactory.CreateScope())
             {
@@ -123,8 +129,8 @@ namespace HomeTask.Application.Services.ClientAgg
                 }
                 catch (Exception ex)
                 {
-                    var message = $"Failed to delete client Id {clientId}";
-                    Logger.LogError($"LotService: " + message, ex);
+                    var message = "Failed to delete client Id {clientId}";
+                    Logger.LogError("LotService: " + message, ex);
 
                     throw new HomeTaskException(ex.Message, ex);
                 }
@@ -135,7 +141,7 @@ namespace HomeTask.Application.Services.ClientAgg
 
         public async Task DeleteAsync(int clientId)
         {
-            Logger.Debug($"LotService: Deleting client Id {clientId} async");
+            Logger.Debug("LotService: Deleting client Id {clientId} async");
 
             using (var unitOfWork = _unitOfWorkFactory.CreateScope())
             {
@@ -148,8 +154,8 @@ namespace HomeTask.Application.Services.ClientAgg
                 }
                 catch (Exception ex)
                 {
-                    var message = $"Failed to delete client Id {clientId} async";
-                    Logger.LogError($"LotService: " + message, ex);
+                    var message = "Failed to delete client Id {clientId} async";
+                    Logger.LogError("LotService: " + message, ex);
 
                     throw new HomeTaskException(ex.Message, ex);
                 }
@@ -188,9 +194,9 @@ namespace HomeTask.Application.Services.ClientAgg
 
             if (client == null)
             {
-                var message = $"Unable to find client Id {clientId}";
+                var message = "Unable to find client Id {clientId}";
 
-                Logger.LogWarning($"LotService: " + message);
+                Logger.LogWarning("LotService: " + message);
 
                 throw new NotFoundException(message);
             }
@@ -201,15 +207,15 @@ namespace HomeTask.Application.Services.ClientAgg
         private void InformCreated(CreateClientRequest request, Client client)
         {
             Logger.LogInfo("LotService: New client created " +
-                           $"Address : {request.Address} " +
-                           $"VIP: {request.VIP}");
+                           "Address : {request.Address} " +
+                           "VIP: {request.VIP}");
 
             _eventBus.Publish(_typeAdapter.Create<Client, ClientCreated>(client));
         }
 
         private void InformDeleted(int clientId, Client client)
         {
-            Logger.LogInfo($"LotService: Client Id {clientId} deleted");
+            Logger.LogInfo("LotService: Client Id {clientId} deleted");
 
             _eventBus.Publish(_typeAdapter.Create<Client, ClientDeleted>(client));
         }

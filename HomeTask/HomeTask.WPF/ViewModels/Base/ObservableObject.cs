@@ -25,7 +25,10 @@ namespace HomeTask.WPF.ViewModels.Base
             if (NotificationSuspended == false)
             {
                 var handler = PropertyChanged;
-                handler?.Invoke(this, args);
+                if (handler != null)
+                {
+                    handler.Invoke(this, args);
+                }
             }
         }
 
@@ -60,7 +63,10 @@ namespace HomeTask.WPF.ViewModels.Base
             if (NotificationSuspended == false)
             {
                 var handler = PropertyChanging;
-                handler?.Invoke(this, args);
+                if (handler != null)
+                {
+                    handler.Invoke(this, args);
+                }
             }
         }
 
