@@ -9,12 +9,14 @@ using HomeTask.Application.Services.ClientAgg;
 using HomeTask.Application.Services.OrderAgg;
 using HomeTask.Application.TypeAdapter;
 using HomeTask.WPF.Commands;
+using HomeTask.Domain.Contracts.Events.Client;
+using HomeTask.Infrastructure.Messaging.Base;
 using HomeTask.WPF.ViewModels.Base;
 using HomeTask.WPF.ViewModels.Observables;
 
 namespace HomeTask.WPF.ViewModels
 {
-    public class MainViewModel : ObservableObject, IMainViewModel
+    public class MainViewModel : ObservableObject, IMainViewModel, IEventHandler<ClientCreated>, IEventHandler<ClientDeleted>
     {
 
         #region Properties & Variables
@@ -95,7 +97,8 @@ namespace HomeTask.WPF.ViewModels
         public MainViewModel(
             IClientService clientService,
             IOrderService orderService,
-            ITypeAdapter typeAdapter)
+            ITypeAdapter typeAdapter,
+            IEventHandlerRegistry eventHandlerRegistry)
         {
             _clientService = clientService;
             _orderService = orderService;
@@ -107,6 +110,7 @@ namespace HomeTask.WPF.ViewModels
                 _typeAdapter.Create<IEnumerable<ClientDTO>, IEnumerable<ClientObservable>>(clients));
             _ordersCollection = new ObservableCollection<OrderObservable>();
 
+
             #region Init Commands
 
             DeleteClient = AsyncCommand.Create(() =>
@@ -117,8 +121,13 @@ namespace HomeTask.WPF.ViewModels
                     {
                         _clientService.DeleteAsync(SelectedClient.Id).ContinueWith( (t) =>
                         {
-                            System.Windows.Application.Current.Dispatcher.InvokeAsync(
-                                () => ClientsCollection.Remove(SelectedClient));
+                            System.Windows.Application.Current.Dispatcher.Invoke(
+                                () =>
+                                {
+                                    ClientsCollection.Remove(SelectedClient);
+                                    SelectedClient = null;
+                                });
+                            
                         },  TaskContinuationOptions.OnlyOnRanToCompletion);
                         
                     });
@@ -143,6 +152,8 @@ namespace HomeTask.WPF.ViewModels
                     }
                 }
             };
+
+            eventHandlerRegistry.Register(this);
         }
 
         private void RefreshOrdersGridForSelectedClient()
@@ -153,6 +164,16 @@ namespace HomeTask.WPF.ViewModels
                     OrdersCollection = new ObservableCollection<OrderObservable>(
                         _typeAdapter.Create<IEnumerable<OrderDTO>, IEnumerable<OrderObservable>>(orders.Result)
                         ), TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        public void Handle(ClientCreated @event)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Handle(ClientDeleted @event)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

@@ -134,6 +134,10 @@
       <Project>{3072F6E9-F839-47A6-8220-EDA646FD4D29}</Project>
       <Name>HomeTask.Application</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HomeTask.Domain.Contracts\HomeTask.Domain.Contracts.csproj">
+      <Project>{715D48BF-A461-4AAD-840C-9E7D5FE83E72}</Project>
+      <Name>HomeTask.Domain.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HomeTask.Domain\HomeTask.Domain.csproj">
       <Project>{981AF4D5-C1B4-4662-8786-829A988A13FE}</Project>
       <Name>HomeTask.Domain</Name>
