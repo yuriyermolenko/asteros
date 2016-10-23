@@ -4,20 +4,33 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HomeTask.WPF"
+        xmlns:converters="clr-namespace:HomeTask.WPF.Converters"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="525" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Grid>
         <Grid.Resources>
-            <Style x:Key="CellCenterAligned" TargetType="DataGridCell">
-                <Style.Setters>
-                    <Setter Property="TextBlock.TextAlignment" Value="Center" />
-                </Style.Setters>
-            </Style>
-            <Style x:Key="HeaderCenterAligned" TargetType="DataGridColumnHeader">
-                <Style.Setters>
-                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                </Style.Setters>
-            </Style>
+         <Style x:Key="CellCenterAligned" TargetType="DataGridCell">
+            <Style.Setters>
+                <Setter Property="TextBlock.TextAlignment" Value="Center" />
+            </Style.Setters>
+          </Style>
+        <Style x:Key="HeaderCenterAligned" TargetType="DataGridColumnHeader">
+            <Style.Setters>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style.Setters>
+        </Style>
+
+         <Style x:Key="RowColorBasedOnVip" TargetType="DataGridRow">
+            <Style.Triggers>
+                    <DataTrigger Binding="{Binding VIP}" Value="True">
+                    <Setter Property="Background" Value="MistyRose"></Setter>
+                </DataTrigger>
+                    <DataTrigger Binding="{Binding VIP}" Value="False">
+                    <Setter Property="Background" Value="WhiteSmoke"></Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -27,10 +40,31 @@
                       AutoGenerateColumns="False"
                       AlternationCount="2" 
                       AlternatingRowBackground="WhiteSmoke"
-                      CanUserAddRows="False">
+                      CanUserAddRows="False"
+                      SelectedItem="{Binding SelectedClient}"
+                      RowStyle="{StaticResource RowColorBasedOnVip}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="7*" HeaderStyle="{StaticResource HeaderCenterAligned}" IsReadOnly="True"/>
                 <DataGridCheckBoxColumn Header="VIP" Binding="{Binding VIP}" Width="*" CellStyle="{StaticResource CellCenterAligned}" HeaderStyle="{StaticResource HeaderCenterAligned}" IsReadOnly="True"/>
+                <DataGridTemplateColumn Header="Actions" Width="auto" HeaderStyle="{StaticResource HeaderCenterAligned}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Margin="3,3,3,3" Width="80" Content="Delete"  Command="{Binding Path=DataContext.Delete, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate >
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <DataGrid Grid.Row="1" Name="dgOrders" ItemsSource="{Binding OrdersCollection}"  Margin="3,3,3,3"
+                      AutoGenerateColumns="False"
+                      AlternationCount="2" 
+                      AlternatingRowBackground="WhiteSmoke"
+                      CanUserAddRows="False"
+                      >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*" HeaderStyle="{StaticResource HeaderCenterAligned}" IsReadOnly="True"/>
                 <DataGridTemplateColumn Header="Actions" Width="auto" HeaderStyle="{StaticResource HeaderCenterAligned}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

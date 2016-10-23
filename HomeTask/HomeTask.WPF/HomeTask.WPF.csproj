@@ -83,9 +83,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converters\VipToColorConverter.cs" />
     <Compile Include="ViewModels\Base\ObservableObject.cs" />
     <Compile Include="ViewModels\IMainViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\Observables\OrderObservable.cs" />
     <Compile Include="ViewModels\Observables\ClientObservable.cs" />
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
@@ -121,9 +123,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Converters\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\HomeTask.Application\HomeTask.Application.csproj">
       <Project>{3072F6E9-F839-47A6-8220-EDA646FD4D29}</Project>
