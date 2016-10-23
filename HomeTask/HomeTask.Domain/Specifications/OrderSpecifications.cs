@@ -14,5 +14,9 @@ namespace HomeTask.Domain.Specifications
         {
             return new DirectSpecification<Order>(c => c.ClientId == clientId);
         }
+        public static Specification<Order> ByDescription(string description)
+        {
+            return new DirectSpecification<Order>(c => c.Description == description);
+        }
     }
 }

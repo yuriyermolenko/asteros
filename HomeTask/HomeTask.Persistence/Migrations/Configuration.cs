@@ -51,12 +51,16 @@ namespace HomeTask.Persistence.Migrations
             var orderRepository = CreateRepository<Order>(context);
 
             var client = clientRepository.FirstOrDefault(ClientSpecifications.ById(clientId));
-
             if (client != null)
             {
-                var order = new Order() {Description = description, ClientId = clientId};
-                orderRepository.Insert(order);
-                context.SaveChanges();
+                var order = orderRepository.FirstOrDefault(OrderSpecifications.ByDescription(description));
+                if (order == null)
+                {
+                    order = new Order() {Description = description, ClientId = clientId};
+                    orderRepository.Insert(order);
+                    context.SaveChanges();
+                    return order.Id;
+                }
                 return order.Id;
             }
 
