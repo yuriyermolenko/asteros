@@ -83,6 +83,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Commands\AsyncCommand.cs" />
+    <Compile Include="Commands\AsyncCommandBase.cs" />
+    <Compile Include="Commands\IAsyncCommand.cs" />
+    <Compile Include="Commands\NotifyTaskCompletion.cs" />
+    <Compile Include="Converters\NotNullToEnabledConverter.cs" />
     <Compile Include="Converters\VipToColorConverter.cs" />
     <Compile Include="ViewModels\Base\ObservableObject.cs" />
     <Compile Include="ViewModels\IMainViewModel.cs" />

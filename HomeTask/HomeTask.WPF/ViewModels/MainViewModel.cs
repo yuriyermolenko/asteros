@@ -8,6 +8,7 @@ using HomeTask.Application.DTO.Order;
 using HomeTask.Application.Services.ClientAgg;
 using HomeTask.Application.Services.OrderAgg;
 using HomeTask.Application.TypeAdapter;
+using HomeTask.WPF.Commands;
 using HomeTask.WPF.ViewModels.Base;
 using HomeTask.WPF.ViewModels.Observables;
 
@@ -15,6 +16,9 @@ namespace HomeTask.WPF.ViewModels
 {
     public class MainViewModel : ObservableObject, IMainViewModel
     {
+
+        #region Properties & Variables
+
         private readonly IClientService _clientService;
         private readonly IOrderService _orderService;
         private readonly ITypeAdapter _typeAdapter;
@@ -79,8 +83,14 @@ namespace HomeTask.WPF.ViewModels
             }
         }
 
+        #endregion
 
-        
+        #region Commands
+
+        public IAsyncCommand DeleteClient { get; private set; }
+
+        #endregion
+
 
         public MainViewModel(
             IClientService clientService,
@@ -96,6 +106,29 @@ namespace HomeTask.WPF.ViewModels
             _clientsCollection = new ObservableCollection<ClientObservable>(
                 _typeAdapter.Create<IEnumerable<ClientDTO>, IEnumerable<ClientObservable>>(clients));
             _ordersCollection = new ObservableCollection<OrderObservable>();
+
+            #region Init Commands
+
+            DeleteClient = AsyncCommand.Create(() =>
+            {
+                if (SelectedClient != null)
+                {
+                    return Task.Run(() =>
+                    {
+                        _clientService.DeleteAsync(SelectedClient.Id).ContinueWith( (t) =>
+                        {
+                            System.Windows.Application.Current.Dispatcher.InvokeAsync(
+                                () => ClientsCollection.Remove(SelectedClient));
+                        },  TaskContinuationOptions.OnlyOnRanToCompletion);
+                        
+                    });
+                }
+                return Task.CompletedTask;
+            });
+     
+            #endregion
+
+
             this.PropertyChanged += (sender, args) =>
             {
                 if (args.PropertyName == "SelectedClient")
@@ -115,13 +148,11 @@ namespace HomeTask.WPF.ViewModels
         private void RefreshOrdersGridForSelectedClient()
         {
             OrdersCollection = null;
-            Task refreshTask = _orderService.GetForClientAsync(SelectedClient.Id)
+            _orderService.GetForClientAsync(SelectedClient.Id)
                 .ContinueWith((orders) =>
                     OrdersCollection = new ObservableCollection<OrderObservable>(
                         _typeAdapter.Create<IEnumerable<OrderDTO>, IEnumerable<OrderObservable>>(orders.Result)
                         ), TaskScheduler.FromCurrentSynchronizationContext());
-
-            //refreshTask.Start();
         }
     }
 }

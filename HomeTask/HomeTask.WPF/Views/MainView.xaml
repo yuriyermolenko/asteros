@@ -9,6 +9,7 @@
         Title="MainWindow" Height="350" Width="525" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Grid>
         <Grid.Resources>
+         <converters:NotNullToEnabledConverter x:Key="NotNullToEnabledConverter"/>
          <Style x:Key="CellCenterAligned" TargetType="DataGridCell">
             <Style.Setters>
                 <Setter Property="TextBlock.TextAlignment" Value="Center" />
@@ -34,6 +35,7 @@
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <DataGrid Grid.Row="0" Name="dgClients" ItemsSource="{Binding ClientsCollection}"  Margin="3,3,3,3"
@@ -46,18 +48,14 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="7*" HeaderStyle="{StaticResource HeaderCenterAligned}" IsReadOnly="True"/>
                 <DataGridCheckBoxColumn Header="VIP" Binding="{Binding VIP}" Width="*" CellStyle="{StaticResource CellCenterAligned}" HeaderStyle="{StaticResource HeaderCenterAligned}" IsReadOnly="True"/>
-                <DataGridTemplateColumn Header="Actions" Width="auto" HeaderStyle="{StaticResource HeaderCenterAligned}">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Margin="3,3,3,3" Width="80" Content="Delete"  Command="{Binding Path=DataContext.Delete, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate >
-                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <DataGrid Grid.Row="1" Name="dgOrders" ItemsSource="{Binding OrdersCollection}"  Margin="3,3,3,3"
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" >
+            <Button Margin="3,3,3,3" Width="80" Content="Delete"  Command="{Binding DeleteClient}" IsEnabled="{Binding SelectedClient, Converter={StaticResource NotNullToEnabledConverter}}" />
+            <Button Margin="3,3,3,3" Width="80" Content="Add"  Command="{Binding Path=DataContext.AddClient}"/>
+            <Button Margin="3,3,3,3" Width="80" Content="Edit"  Command="{Binding Path=DataContext.EditClient}" IsEnabled="{Binding SelectedClient, Converter={StaticResource NotNullToEnabledConverter}}" />
+        </StackPanel>
+        <DataGrid Grid.Row="2" Name="dgOrders" ItemsSource="{Binding OrdersCollection}"  Margin="3,3,3,3"
                       AutoGenerateColumns="False"
                       AlternationCount="2" 
                       AlternatingRowBackground="WhiteSmoke"
@@ -65,15 +63,6 @@
                       >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*" HeaderStyle="{StaticResource HeaderCenterAligned}" IsReadOnly="True"/>
-                <DataGridTemplateColumn Header="Actions" Width="auto" HeaderStyle="{StaticResource HeaderCenterAligned}">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Margin="3,3,3,3" Width="80" Content="Delete"  Command="{Binding Path=DataContext.Delete, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate >
-                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
