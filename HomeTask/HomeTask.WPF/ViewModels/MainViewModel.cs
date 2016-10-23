@@ -8,12 +8,14 @@ using HomeTask.Application.DTO.Order;
 using HomeTask.Application.Services.ClientAgg;
 using HomeTask.Application.Services.OrderAgg;
 using HomeTask.Application.TypeAdapter;
+using HomeTask.Domain.Contracts.Events.Client;
+using HomeTask.Infrastructure.Messaging.Base;
 using HomeTask.WPF.ViewModels.Base;
 using HomeTask.WPF.ViewModels.Observables;
 
 namespace HomeTask.WPF.ViewModels
 {
-    public class MainViewModel : ObservableObject, IMainViewModel
+    public class MainViewModel : ObservableObject, IMainViewModel, IEventHandler<ClientCreated>, IEventHandler<ClientDeleted>
     {
         private readonly IClientService _clientService;
         private readonly IOrderService _orderService;
@@ -85,7 +87,8 @@ namespace HomeTask.WPF.ViewModels
         public MainViewModel(
             IClientService clientService,
             IOrderService orderService,
-            ITypeAdapter typeAdapter)
+            ITypeAdapter typeAdapter,
+            IEventHandlerRegistry eventHandlerRegistry)
         {
             _clientService = clientService;
             _orderService = orderService;
@@ -96,6 +99,7 @@ namespace HomeTask.WPF.ViewModels
             _clientsCollection = new ObservableCollection<ClientObservable>(
                 _typeAdapter.Create<IEnumerable<ClientDTO>, IEnumerable<ClientObservable>>(clients));
             _ordersCollection = new ObservableCollection<OrderObservable>();
+
             this.PropertyChanged += (sender, args) =>
             {
                 if (args.PropertyName == "SelectedClient")
@@ -110,6 +114,8 @@ namespace HomeTask.WPF.ViewModels
                     }
                 }
             };
+
+            eventHandlerRegistry.Register(this);
         }
 
         private void RefreshOrdersGridForSelectedClient()
@@ -122,6 +128,16 @@ namespace HomeTask.WPF.ViewModels
                         ), TaskScheduler.FromCurrentSynchronizationContext());
 
             //refreshTask.Start();
+        }
+
+        public void Handle(ClientCreated @event)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Handle(ClientDeleted @event)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

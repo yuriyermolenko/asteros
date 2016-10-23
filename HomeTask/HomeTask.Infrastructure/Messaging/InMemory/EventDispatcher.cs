@@ -13,7 +13,7 @@ namespace HomeTask.Infrastructure.Messaging.InMemory
         #region Fields and properties
 
         private readonly Dictionary<Type, List<Tuple<Type, Action<Envelope>>>> _handlersByEventType;
-        private readonly Dictionary<Type, Action<IEvent, string, string, string>> _dispatchersByEventType;
+        private readonly Dictionary<Type, Action<IEvent>> _dispatchersByEventType;
 
         #endregion
 
@@ -22,7 +22,7 @@ namespace HomeTask.Infrastructure.Messaging.InMemory
         public EventDispatcher()
         {
             _handlersByEventType = new Dictionary<Type, List<Tuple<Type, Action<Envelope>>>>();
-            _dispatchersByEventType = new Dictionary<Type, Action<IEvent, string, string, string>>();
+            _dispatchersByEventType = new Dictionary<Type, Action<IEvent>>();
         }
 
         #endregion
@@ -70,20 +70,15 @@ namespace HomeTask.Infrastructure.Messaging.InMemory
 
         public void DispatchMessage(IEvent @event)
         {
-            DispatchMessage(@event, null, null, "");
-        }
-
-        public void DispatchMessage(IEvent @event, string messageId, string correlationId, string traceIdentifier)
-        {
-            Action<IEvent, string, string, string> dispatch;
+            Action<IEvent> dispatch;
             if (_dispatchersByEventType.TryGetValue(@event.GetType(), out dispatch))
             {
-                dispatch(@event, messageId, correlationId, traceIdentifier);
+                dispatch(@event);
             }
             // Invoke also the generic handlers that have registered to handle IEvent directly.
             if (_dispatchersByEventType.TryGetValue(typeof(IEvent), out dispatch))
             {
-                dispatch(@event, messageId, correlationId, traceIdentifier);
+                dispatch(@event);
             }
         }
 
@@ -158,7 +153,7 @@ namespace HomeTask.Infrastructure.Messaging.InMemory
             return (Action<Envelope>)invocationExpression.Compile();
         }
 
-        private Action<IEvent, string, string, string> BuildDispatchInvocation(Type eventType)
+        private Action<IEvent> BuildDispatchInvocation(Type eventType)
         {
             var eventParameter = Expression.Parameter(typeof(IEvent));
 
@@ -171,7 +166,7 @@ namespace HomeTask.Infrastructure.Messaging.InMemory
                             Expression.Convert(eventParameter, eventType))),
                     eventParameter);
 
-            return (Action<IEvent, string, string, string>)dispatchExpression.Compile();
+            return (Action<IEvent>)dispatchExpression.Compile();
         }
 
         #endregion

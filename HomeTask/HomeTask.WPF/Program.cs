@@ -44,7 +44,9 @@ namespace HomeTask.WPF
             container.Register<IOrderService, OrderService>();
 
             // infrastructure
-            container.Register<IEventBus, InMemoryEventBus>(Lifestyle.Singleton);
+            container.RegisterSingleton<InMemoryEventBus>();
+            container.RegisterSingleton<IEventBus>(() => container.GetInstance<InMemoryEventBus>());
+            container.RegisterSingleton<IEventHandlerRegistry>(() => container.GetInstance<InMemoryEventBus>());
 
             // Register your windows and view models:
             container.Register<MainView>();
