@@ -7,7 +7,7 @@
         xmlns:converters="clr-namespace:HomeTask.WPF.Converters"
         xmlns:views="clr-namespace:HomeTask.WPF.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        Title="MainWindow" Height="350" Width="525" WindowStartupLocation="CenterScreen" WindowState="Maximized" Name="MainWindow">
     <Grid>
        <Grid.Resources>
          <converters:NotNullToEnabledConverter x:Key="NotNullToEnabledConverter"/>
@@ -80,11 +80,8 @@
                               Margin="3,3,3,3" 
                               Width="200" 
                               DataContext="{Binding ClientEditorViewModel}" 
-                              Visibility="{Binding Path=ShowClientEditor, Converter={StaticResource BoolToVisibilityConverter}}">
-
+                              Visibility="{Binding ElementName=MainWindow, Path=DataContext.ShowClientEditor, Converter={StaticResource BoolToVisibilityConverter}}">
         </views:ClientEditView>
-       
-
     </Grid>
-    
+   
 </Window>
