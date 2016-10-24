@@ -12,7 +12,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>  
         <StackPanel Orientation="Vertical" Grid.Column="0">
             <TextBlock Margin="3,3,3,3" Text="Address" Height="20"></TextBlock>

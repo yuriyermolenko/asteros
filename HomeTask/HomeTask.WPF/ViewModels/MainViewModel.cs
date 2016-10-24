@@ -287,6 +287,7 @@ namespace HomeTask.WPF.ViewModels
                         });
                     }
                 };
+                eventHandlerRegistry.Register(OrderEditorViewModel);
                 ShowOrderEditor = true;
             });
 
@@ -327,6 +328,7 @@ namespace HomeTask.WPF.ViewModels
                         });
                     }
                 };
+                eventHandlerRegistry.Register(OrderEditorViewModel);
                 ShowOrderEditor = true;
             });
 
@@ -350,7 +352,7 @@ namespace HomeTask.WPF.ViewModels
                     }
                 }
             };
-
+            
             eventHandlerRegistry.Register(this);
         }
 

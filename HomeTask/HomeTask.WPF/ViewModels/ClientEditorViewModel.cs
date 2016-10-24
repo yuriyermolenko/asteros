@@ -90,7 +90,7 @@ namespace HomeTask.WPF.ViewModels
 
         public void Handle(ClientDeleted @event)
         {
-            if (@event.ClientId == Client.Id)
+            if (@event.Id == Client.Id)
             {
                 FireCanceled();
             }

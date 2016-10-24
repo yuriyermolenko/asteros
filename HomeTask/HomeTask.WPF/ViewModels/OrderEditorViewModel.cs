@@ -19,7 +19,7 @@ using HomeTask.WPF.Views;
 
 namespace HomeTask.WPF.ViewModels
 {
-    public class OrderEditorViewModel : ObservableObject, IEventHandler<OrderDeleted>
+    public class OrderEditorViewModel : ObservableObject, IEventHandler<OrderDeleted>, IEventHandler<ClientDeleted>
     {
 
         #region Properties & Variables
@@ -90,6 +90,14 @@ namespace HomeTask.WPF.ViewModels
                 FireCanceled();
             }
             
+        }
+        public void Handle(ClientDeleted @event)
+        {
+            if (@event.Id == Order.ClientId)
+            {
+                FireCanceled();
+            }
+
         }
     }
 }
