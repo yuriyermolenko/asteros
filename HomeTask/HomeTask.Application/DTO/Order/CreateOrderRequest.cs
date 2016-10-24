@@ -4,5 +4,11 @@
     {
         public string Description { get; set; }
         public int ClientId { get; set; }
+
+        public CreateOrderRequest(string description, int clientId)
+        {
+            Description = description;
+            ClientId = clientId;
+        }
     }
 }

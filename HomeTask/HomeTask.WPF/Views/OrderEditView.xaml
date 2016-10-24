@@ -6,6 +6,24 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-            
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Vertical" Grid.Column="0">
+            <TextBlock Margin="3,3,3,3" Text="Description" Height="20"></TextBlock>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Grid.Column="1">
+            <TextBox Margin="3,3,3,3" Height="20" Text="{Binding Path=Order.Description}"></TextBox>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal">
+            <Button Content="Save" Margin="3,3,3,3" Width="80" Height="50" Command="{Binding EditDoneCommand}"></Button>
+            <Button Content="Cancel" Margin="3,3,3,3" Width="80" Height="50" Command="{Binding EditCancelCommand}"></Button>
+        </StackPanel>
+
     </Grid>
 </UserControl>

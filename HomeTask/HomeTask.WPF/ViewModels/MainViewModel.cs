@@ -130,12 +130,30 @@ namespace HomeTask.WPF.ViewModels
             }
         }
 
+        private OrderEditorViewModel _orderEditorViewModel;
+        public OrderEditorViewModel OrderEditorViewModel
+        {
+            get { return _orderEditorViewModel; }
+            set
+            {
+                if (_orderEditorViewModel != value)
+                {
+                    OnPropertyChanging(() => OrderEditorViewModel);
+                    _orderEditorViewModel = value;
+                    OnPropertyChanged(() => OrderEditorViewModel);
+                }
+            }
+        }
+
         #endregion
 
         #region Commands
 
         public IAsyncCommand DeleteClient { get; private set; }
         public DelegateCommand AddClient { get; private set; }
+        public IAsyncCommand DeleteOrder { get; private set; }
+        public DelegateCommand AddOrder { get; private set; }
+        public DelegateCommand EditOrder { get; private set; }
 
         #endregion
 
@@ -159,6 +177,8 @@ namespace HomeTask.WPF.ViewModels
 
             ShowClientEditor = false;
             ShowOrderEditor = false;
+
+            #region Client Commands
 
             DeleteClient = AsyncCommand.Create(() =>
             {
@@ -213,6 +233,106 @@ namespace HomeTask.WPF.ViewModels
                 ShowClientEditor = true;
             });
      
+            #endregion
+
+            #region Order Commands
+
+            DeleteOrder = AsyncCommand.Create(() =>
+            {
+                if (SelectedOrder != null)
+                {
+                    return Task.Run(() =>
+                    {
+                        _orderService.DeleteAsync(SelectedOrder.Id).ContinueWith((t) =>
+                        {
+                            System.Windows.Application.Current.Dispatcher.Invoke(
+                                () =>
+                                {
+                                    OrdersCollection.Remove(SelectedOrder);
+                                    SelectedOrder = null;
+                                });
+
+                        }, TaskContinuationOptions.OnlyOnRanToCompletion);
+
+                    });
+                }
+                return Task.CompletedTask;
+            });
+
+            AddOrder= new DelegateCommand((o) =>
+            {
+                OrderEditorViewModel = new OrderEditorViewModel() { Order = new OrderObservable() {ClientId = SelectedClient.Id} };
+                OrderEditorViewModel.OnEditCanceled += (sender, args) =>
+                {
+                    ShowOrderEditor = false;
+                };
+                OrderEditorViewModel.OnEditDone += (sender, args) =>
+                {
+                    if (OrderEditorViewModel.Order != null)
+                    {
+                        Task.Run(() =>
+                        {
+                            _orderService.CreateAsync(new CreateOrderRequest(OrderEditorViewModel.Order.Description, OrderEditorViewModel.Order.ClientId)).ContinueWith((t) =>
+                            {
+                                OrderEditorViewModel.Order.Id = t.Result;
+                                System.Windows.Application.Current.Dispatcher.Invoke(
+                                    () =>
+                                    {
+                                        OrdersCollection.Add(OrderEditorViewModel.Order);
+                                        SelectedOrder = OrderEditorViewModel.Order;
+                                        ShowOrderEditor = false;
+                                    });
+
+                            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+                        });
+                    }
+                };
+                ShowOrderEditor = true;
+            });
+
+            EditOrder = new DelegateCommand((o) =>
+            {
+                OrderEditorViewModel = new OrderEditorViewModel() { Order = new OrderObservable() { ClientId = SelectedOrder.ClientId, Id = SelectedOrder.Id, Description = SelectedOrder.Description}};
+                OrderEditorViewModel.OnEditCanceled += (sender, args) =>
+                {
+                    ShowOrderEditor = false;
+                };
+                OrderEditorViewModel.OnEditDone += (sender, args) =>
+                {
+                    if (OrderEditorViewModel.Order != null)
+                    {
+                        Task.Run(() =>
+                        {
+                            _orderService.UpdateAsync(new UpdateOrderRequest(OrderEditorViewModel.Order.Id, OrderEditorViewModel.Order.Description, OrderEditorViewModel.Order.ClientId)).ContinueWith((t) =>
+                            {
+                                System.Windows.Application.Current.Dispatcher.Invoke(
+                                    () =>
+                                    {
+                                        var order =
+                                            OrdersCollection.FirstOrDefault((ord) => ord.Id == OrderEditorViewModel.Order.Id);
+                                        if (order != null)
+                                        {
+                                           var idx = OrdersCollection.IndexOf(order);
+                                            if (idx > -1)
+                                            {
+                                                OrdersCollection.RemoveAt(idx);
+                                                OrdersCollection.Insert(idx, OrderEditorViewModel.Order);
+                                            }
+                                        }
+                                        SelectedOrder = OrderEditorViewModel.Order;
+                                        ShowOrderEditor = false;
+                                    });
+
+                            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+                        });
+                    }
+                };
+                ShowOrderEditor = true;
+            });
+
+
+            #endregion
+
             #endregion
 
 
