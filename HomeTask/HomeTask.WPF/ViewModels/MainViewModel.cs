@@ -168,12 +168,12 @@ namespace HomeTask.WPF.ViewModels
 
         public void Handle(ClientCreated @event)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         public void Handle(ClientDeleted @event)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
     }
 }
