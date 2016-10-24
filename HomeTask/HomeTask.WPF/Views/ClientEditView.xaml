@@ -26,6 +26,5 @@
             <Button Content="Save" Margin="3,3,3,3" Width="80" Height="50" Command="{Binding EditDoneCommand}"></Button>
             <Button Content="Cancel" Margin="3,3,3,3" Width="80" Height="50" Command="{Binding EditCancelCommand}"></Button>
         </StackPanel>
-        
     </Grid>
 </UserControl>

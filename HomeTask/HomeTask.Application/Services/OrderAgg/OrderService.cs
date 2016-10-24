@@ -34,11 +34,9 @@ namespace HomeTask.Application.Services.OrderAgg
 
         public int Create(CreateOrderRequest request)
         {
-            Logger.Debug("OrderService: Creating new order for " 
-                         //+
-                         //$"Client Id : {request.ClientId} " +
-                         //$"Description: {request.Description}"
-                         );
+            Logger.Debug("OrderService: Creating new order for " +
+                         $"Client Id : {request.ClientId} " +
+                         $"Description: {request.Description}");
 
             var order = _typeAdapter.Create<CreateOrderRequest, Order>(request);
 
@@ -53,11 +51,9 @@ namespace HomeTask.Application.Services.OrderAgg
             }
             catch (Exception ex)
             {
-                var message = "Failed to create new order for " 
-                    //+
-                    //$"Client Id : {request.ClientId} " +
-                    //$"Description: {request.Description}"
-                    ;
+                var message = "Failed to create new order for " +
+                              $"Client Id : {request.ClientId} " +
+                              $"Description: {request.Description}";
 
                 Logger.LogError("OrderService: " + message, ex);
 
@@ -65,10 +61,7 @@ namespace HomeTask.Application.Services.OrderAgg
             }
             finally
             {
-                if (unitOfWork != null)
-                {
-                    unitOfWork.Dispose();
-                }
+                unitOfWork?.Dispose();
             }
 
             InformCreated(request, order);
@@ -78,11 +71,9 @@ namespace HomeTask.Application.Services.OrderAgg
 
         public async Task<int> CreateAsync(CreateOrderRequest request)
         {
-            Logger.Debug("OrderService: Creating new order async for " 
-                         //+
-                         //"Client Id : {request.ClientId} " +
-                         //"Description: {request.Description}"
-                         );
+            Logger.Debug("OrderService: Creating new order async for " +
+                         $"Client Id : {request.ClientId} " +
+                         $"Description: {request.Description}");
 
             var order = _typeAdapter.Create<CreateOrderRequest, Order>(request);
 
@@ -97,11 +88,9 @@ namespace HomeTask.Application.Services.OrderAgg
             }
             catch (Exception ex)
             {
-                var message = "Failed to create new order async for "
-                              //+
-                              //$"Client Id : {request.ClientId} " +
-                              //$"Description: {request.Description}"
-                              ;
+                var message = "Failed to create new order async for " +
+                              $"Client Id : {request.ClientId} " +
+                              $"Description: {request.Description}";
 
                 Logger.LogError("OrderService: " + message, ex);
 
@@ -109,10 +98,7 @@ namespace HomeTask.Application.Services.OrderAgg
             }
             finally
             {
-                if (unitOfWork != null)
-                {
-                    unitOfWork.Dispose();
-                }
+                unitOfWork?.Dispose();
             }
 
             InformCreated(request, order);
@@ -122,9 +108,9 @@ namespace HomeTask.Application.Services.OrderAgg
 
         public void Update(UpdateOrderRequest request)
         {
-            //Logger.Debug($"OrderService: Updating order id {request.Id} " +
-            //     $"Client Id : {request.ClientId} " +
-            //     $"Description: {request.Description}");
+            Logger.Debug($"OrderService: Updating order id {request.Id} " +
+                         $"Client Id : {request.ClientId} " +
+                         $"Description: {request.Description}");
 
             using (var unitOfWork = _unitOfWorkFactory.CreateScope())
             {
@@ -137,11 +123,9 @@ namespace HomeTask.Application.Services.OrderAgg
                 }
                 catch (Exception ex)
                 {
-                    var message = "Failed to update order"
-                                  //$"Failed to update order Id {request.Id}" +
-                                  //$"Client Id : {request.ClientId} " +
-                                  //$"Description: {request.Description}"
-                                  ;
+                    var message = $"Failed to update order Id {request.Id}" +
+                                  $"Client Id : {request.ClientId} " +
+                                  $"Description: {request.Description}";
 
                     Logger.LogError("OrderService: " + message, ex);
 
@@ -154,10 +138,9 @@ namespace HomeTask.Application.Services.OrderAgg
 
         public async Task UpdateAsync(UpdateOrderRequest request)
         {
-            Logger.Debug("OrderService: Updating order id {request.Id} "
-                 //$"Client Id : {request.ClientId} " +
-                 //$"Description: {request.Description}"
-                 );
+            Logger.Debug("OrderService: Updating order id {request.Id} " +
+                         $"Client Id : {request.ClientId} " +
+                         $"Description: {request.Description}");
 
             using (var unitOfWork = _unitOfWorkFactory.CreateScope())
             {
@@ -170,10 +153,9 @@ namespace HomeTask.Application.Services.OrderAgg
                 }
                 catch (Exception ex)
                 {
-                    var message = "Failed to update order Id {request.Id}";
-                        //+
-                        //          $"Client Id : {request.ClientId} " +
-                        //          $"Description: {request.Description}";
+                    var message = "Failed to update order Id {request.Id}" +
+                                  $"Client Id : {request.ClientId} " +
+                                  $"Description: {request.Description}";
 
                     Logger.LogError("OrderService: " + message, ex);
 
@@ -186,7 +168,7 @@ namespace HomeTask.Application.Services.OrderAgg
 
         public void Delete(int orderId)
         {
-            Logger.Debug("OrderService: Deleting order Id {orderId}");
+            Logger.Debug($"OrderService: Deleting order Id {orderId}");
 
             using (var unitOfWork = _unitOfWorkFactory.CreateScope())
             {
@@ -199,7 +181,7 @@ namespace HomeTask.Application.Services.OrderAgg
                 }
                 catch (Exception ex)
                 {
-                    var message = "Failed to delete order Id {orderId}";
+                    var message = $"Failed to delete order Id {orderId}";
                     Logger.LogError("OrderService: " + message, ex);
 
                     throw new HomeTaskException(ex.Message, ex);
@@ -211,7 +193,7 @@ namespace HomeTask.Application.Services.OrderAgg
 
         public async Task DeleteAsync(int orderId)
         {
-            Logger.Debug("OrderService: Deleting order Id {orderId} async");
+            Logger.Debug($"OrderService: Deleting order Id {orderId} async");
 
             using (var unitOfWork = _unitOfWorkFactory.CreateScope())
             {
@@ -224,7 +206,7 @@ namespace HomeTask.Application.Services.OrderAgg
                 }
                 catch (Exception ex)
                 {
-                    var message = "Failed to delete order Id {orderId} async";
+                    var message = $"Failed to delete order Id {orderId} async";
                     Logger.LogError("OrderService: " + message, ex);
 
                     throw new HomeTaskException(ex.Message, ex);
@@ -236,7 +218,7 @@ namespace HomeTask.Application.Services.OrderAgg
 
         public IEnumerable<OrderDTO> GetForClient(int clientId)
         {
-            Logger.Debug("LotService: Retrieving orders for {clientId}");
+            Logger.Debug($"LotService: Retrieving orders for {clientId}");
 
             using (var unitOfWork = _unitOfWorkFactory.CreateScope())
             {
@@ -248,7 +230,7 @@ namespace HomeTask.Application.Services.OrderAgg
 
         public async Task<IEnumerable<OrderDTO>> GetForClientAsync(int clientId)
         {
-            Logger.Debug("LotService: Retrieving orders for {clientId} async");
+            Logger.Debug($"LotService: Retrieving orders for {clientId} async");
 
             using (var unitOfWork = _unitOfWorkFactory.CreateScope())
             {
@@ -264,7 +246,7 @@ namespace HomeTask.Application.Services.OrderAgg
 
             if (order == null)
             {
-                var message = "Unable to find order Id {orderId}";
+                var message = $"Unable to find order Id {orderId}";
 
                 Logger.LogWarning("OrderService: " + message);
 
@@ -275,16 +257,16 @@ namespace HomeTask.Application.Services.OrderAgg
 
         private void InformUpdated(UpdateOrderRequest request, Order order)
         {
-            Logger.LogInfo("OrderService: Order id {request.Id} updated" +
-                           "Client Id : {request.ClientId} " +
-                           "Description: {request.Description}");
+            Logger.LogInfo($"OrderService: Order id {request.Id} updated" +
+                           $"Client Id : {request.ClientId} " +
+                           $"Description: {request.Description}");
 
             _eventBus.Publish(_typeAdapter.Create<Order, OrderUpdated>(order));
         }
 
         private void InformDeleted(int orderId, Order order)
         {
-            Logger.LogInfo("OrderService: Order Id {orderId} deleted");
+            Logger.LogInfo($"OrderService: Order Id {orderId} deleted");
 
             _eventBus.Publish(_typeAdapter.Create<Order, OrderDeleted>(order));
         }
@@ -292,8 +274,8 @@ namespace HomeTask.Application.Services.OrderAgg
         private void InformCreated(CreateOrderRequest request, Order order)
         {
             Logger.LogInfo("OrderService: New order created for" +
-                           "Client Id : {request.ClientId} " +
-                           "Description: {request.Description}");
+                           $"Client Id : {request.ClientId} " +
+                           $"Description: {request.Description}");
 
             _eventBus.Publish(_typeAdapter.Create<Order, OrderCreated>(order));
         }

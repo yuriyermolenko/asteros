@@ -7,9 +7,8 @@ namespace HomeTask.Persistence.Context
     {
         public HomeTaskDbContext()
             : base("HomeTaskConnection")
-        //: base(@"Data Source = (local)\SQLEXPRESS;Initial Catalog = HomeTask;Integrated Security=True")
         {
-            Database.SetInitializer<HomeTaskDbContext>(new HomeTaskDbInitializer());
+            Database.SetInitializer(new HomeTaskDbInitializer());
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

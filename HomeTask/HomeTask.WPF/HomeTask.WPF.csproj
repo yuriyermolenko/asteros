@@ -76,6 +76,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\DelegateCommands.cs" />
+    <Compile Include="ViewModels\IMainViewModel.cs" />
     <Compile Include="ViewModels\OrderEditorViewModel.cs" />
     <Compile Include="ViewModels\ClientEditorViewModel.cs" />
     <Compile Include="Views\OrderEditorEventArgs.cs" />
@@ -102,7 +103,6 @@
     <Compile Include="Converters\NotNullToEnabledConverter.cs" />
     <Compile Include="Converters\VipToColorConverter.cs" />
     <Compile Include="ViewModels\Base\ObservableObject.cs" />
-    <Compile Include="ViewModels\IMainViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\Observables\OrderObservable.cs" />
     <Compile Include="ViewModels\Observables\ClientObservable.cs" />

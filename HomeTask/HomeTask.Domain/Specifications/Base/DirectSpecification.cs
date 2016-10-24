@@ -13,7 +13,7 @@ namespace HomeTask.Domain.Specifications.Base
         {
             if (matchingCriteria == null)
             {
-                throw new ArgumentNullException("matchingCriteria");
+                throw new ArgumentNullException(nameof(matchingCriteria));
             }
 
             _matchingCriteria = matchingCriteria;

@@ -13,27 +13,21 @@ namespace HomeTask.Domain.Specifications.Base
         {
             if (leftSide == null)
             {
-                throw new ArgumentNullException("leftSide");
+                throw new ArgumentNullException(nameof(leftSide));
             }
 
             if (rightSide == null)
             {
-                throw new ArgumentNullException("rightSide");
+                throw new ArgumentNullException(nameof(rightSide));
             }
 
             _leftSideSpecification = leftSide;
             _rightSideSpecification = rightSide;
         }
 
-        public override ISpecification<T> LeftSideSpecification
-        {
-           get { return _leftSideSpecification; }  
-        }
+        public override ISpecification<T> LeftSideSpecification => _leftSideSpecification;
 
-        public override ISpecification<T> RightSideSpecification
-        {
-            get { return _rightSideSpecification; }
-        } 
+        public override ISpecification<T> RightSideSpecification => _rightSideSpecification;
 
         public override Expression<Func<T, bool>> SatisfiedBy()
         {

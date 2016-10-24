@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace HomeTask.WPF.Commands
 {
@@ -14,6 +9,8 @@ namespace HomeTask.WPF.Commands
     {
         private readonly Func<Task<TResult>> _command;
         private NotifyTaskCompletion<TResult> _execution;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public AsyncCommand(Func<Task<TResult>> command)
         {
@@ -43,12 +40,10 @@ namespace HomeTask.WPF.Commands
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            var handler = PropertyChanged;
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 

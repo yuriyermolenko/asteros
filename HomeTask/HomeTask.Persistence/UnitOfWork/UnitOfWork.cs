@@ -12,17 +12,11 @@ namespace HomeTask.Persistence.UnitOfWork
 
         private IRepository<Client> _clientRepository;
 
-        public IRepository<Client> ClientRepository
-        {
-            get { return _clientRepository ?? (_clientRepository = new Repository<Client>(_dbContext)); }
-        }
+        public IRepository<Client> ClientRepository => _clientRepository ?? (_clientRepository = new Repository<Client>(_dbContext));
 
         private IRepository<Order> _orderRepository;
 
-        public IRepository<Order> OrderRepository
-        {
-            get { return _orderRepository ?? (_orderRepository = new Repository<Order>(_dbContext)); }
-        }
+        public IRepository<Order> OrderRepository => _orderRepository ?? (_orderRepository = new Repository<Order>(_dbContext));
 
         public UnitOfWork(IHomeTaskDbContext dbContext)
         {
@@ -41,10 +35,7 @@ namespace HomeTask.Persistence.UnitOfWork
 
         public void Dispose()
         {
-            if (_dbContext != null)
-            {
-                _dbContext.Dispose();
-            }
+            _dbContext?.Dispose();
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace HomeTask.Application.DTO.Order
+﻿namespace HomeTask.Application.DTO.Order
 {
     public class UpdateOrderRequest
     {

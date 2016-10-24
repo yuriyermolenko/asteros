@@ -1,9 +1,4 @@
-using HomeTask.Domain.Aggregates.Base;
-using HomeTask.Domain.Aggregates.ClientAgg;
-using HomeTask.Domain.Aggregates.OrderAgg;
-using HomeTask.Domain.Specifications;
 using HomeTask.Persistence.Context;
-using HomeTask.Persistence.Repositories;
 
 namespace HomeTask.Persistence.Migrations
 {

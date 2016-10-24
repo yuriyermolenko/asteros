@@ -70,10 +70,7 @@ namespace HomeTask.Persistence.Repositories
 
         public void Dispose()
         {
-            if (_dbContext != null)
-            {
-                _dbContext.Dispose();
-            }
+            _dbContext?.Dispose();
         }
 
         private IQueryable<TEntity> BuildQuery(Specification<TEntity>[] specifications)

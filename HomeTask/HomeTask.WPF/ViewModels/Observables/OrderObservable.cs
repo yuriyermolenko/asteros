@@ -50,6 +50,5 @@ namespace HomeTask.WPF.ViewModels.Observables
                 }
             }
         }
-
     }
 }

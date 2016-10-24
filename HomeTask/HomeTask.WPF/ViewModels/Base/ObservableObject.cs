@@ -14,6 +14,7 @@ namespace HomeTask.WPF.ViewModels.Base
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangingEventHandler PropertyChanging;
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
@@ -25,10 +26,7 @@ namespace HomeTask.WPF.ViewModels.Base
             if (NotificationSuspended == false)
             {
                 var handler = PropertyChanged;
-                if (handler != null)
-                {
-                    handler.Invoke(this, args);
-                }
+                handler?.Invoke(this, args);
             }
         }
 
@@ -51,7 +49,6 @@ namespace HomeTask.WPF.ViewModels.Base
             OnPropertyChanged(memberExpression.Member.Name);
         }
 
-        public event PropertyChangingEventHandler PropertyChanging;
 
         protected virtual void OnPropertyChanging(string propertyName)
         {
@@ -63,10 +60,7 @@ namespace HomeTask.WPF.ViewModels.Base
             if (NotificationSuspended == false)
             {
                 var handler = PropertyChanging;
-                if (handler != null)
-                {
-                    handler.Invoke(this, args);
-                }
+                handler?.Invoke(this, args);
             }
         }
 

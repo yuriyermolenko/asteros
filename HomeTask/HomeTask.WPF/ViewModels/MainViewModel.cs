@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using HomeTask.Application.DTO.Client;
 using HomeTask.Application.DTO.Order;
@@ -9,18 +8,14 @@ using HomeTask.Application.Services.ClientAgg;
 using HomeTask.Application.Services.OrderAgg;
 using HomeTask.Application.TypeAdapter;
 using HomeTask.WPF.Commands;
-using HomeTask.Domain.Contracts.Events.Client;
 using HomeTask.Infrastructure.Messaging.Base;
 using HomeTask.WPF.ViewModels.Base;
 using HomeTask.WPF.ViewModels.Observables;
 
 namespace HomeTask.WPF.ViewModels
 {
-    public class MainViewModel : ObservableObject, IMainViewModel, IEventHandler<ClientCreated>, IEventHandler<ClientDeleted>
+    public class MainViewModel : ObservableObject, IMainViewModel
     {
-
-        #region Properties & Variables
-
         private readonly IClientService _clientService;
         private readonly IOrderService _orderService;
         private readonly ITypeAdapter _typeAdapter;
@@ -145,18 +140,11 @@ namespace HomeTask.WPF.ViewModels
             }
         }
 
-        #endregion
-
-        #region Commands
-
-        public IAsyncCommand DeleteClient { get; private set; }
-        public DelegateCommand AddClient { get; private set; }
-        public IAsyncCommand DeleteOrder { get; private set; }
-        public DelegateCommand AddOrder { get; private set; }
-        public DelegateCommand EditOrder { get; private set; }
-
-        #endregion
-
+        public IAsyncCommand DeleteClient { get; }
+        public DelegateCommand AddClient { get; }
+        public IAsyncCommand DeleteOrder { get; }
+        public DelegateCommand AddOrder { get; }
+        public DelegateCommand EditOrder { get; }
 
         public MainViewModel(
             IClientService clientService,
@@ -173,12 +161,9 @@ namespace HomeTask.WPF.ViewModels
             _clientsCollection = new ObservableCollection<ClientObservable>(
                 _typeAdapter.Create<IEnumerable<ClientDTO>, IEnumerable<ClientObservable>>(clients));
             _ordersCollection = new ObservableCollection<OrderObservable>();
-            #region Init Commands
 
             ShowClientEditor = false;
             ShowOrderEditor = false;
-
-            #region Client Commands
 
             DeleteClient = AsyncCommand.Create(() =>
             {
@@ -233,10 +218,6 @@ namespace HomeTask.WPF.ViewModels
                 ShowClientEditor = true;
             });
      
-            #endregion
-
-            #region Order Commands
-
             DeleteOrder = AsyncCommand.Create(() =>
             {
                 if (SelectedOrder != null)
@@ -332,13 +313,7 @@ namespace HomeTask.WPF.ViewModels
                 ShowOrderEditor = true;
             });
 
-
-            #endregion
-
-            #endregion
-
-
-            this.PropertyChanged += (sender, args) =>
+            PropertyChanged += (sender, args) =>
             {
                 if (args.PropertyName == "SelectedClient")
                 {
@@ -352,8 +327,6 @@ namespace HomeTask.WPF.ViewModels
                     }
                 }
             };
-            
-            eventHandlerRegistry.Register(this);
         }
 
         private void RefreshOrdersGridForSelectedClient()
@@ -364,16 +337,6 @@ namespace HomeTask.WPF.ViewModels
                     OrdersCollection = new ObservableCollection<OrderObservable>(
                         _typeAdapter.Create<IEnumerable<OrderDTO>, IEnumerable<OrderObservable>>(orders.Result)
                         ), TaskScheduler.FromCurrentSynchronizationContext());
-        }
-
-        public void Handle(ClientCreated @event)
-        {
-           // throw new System.NotImplementedException();
-        }
-
-        public void Handle(ClientDeleted @event)
-        {
-           // throw new System.NotImplementedException();
         }
     }
 }
