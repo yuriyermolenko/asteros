@@ -5,11 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HomeTask.WPF"
         xmlns:converters="clr-namespace:HomeTask.WPF.Converters"
+        xmlns:views="clr-namespace:HomeTask.WPF.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Grid>
-        <Grid.Resources>
+       <Grid.Resources>
          <converters:NotNullToEnabledConverter x:Key="NotNullToEnabledConverter"/>
+         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
          <Style x:Key="CellCenterAligned" TargetType="DataGridCell">
             <Style.Setters>
                 <Setter Property="TextBlock.TextAlignment" Value="Center" />
@@ -33,37 +35,56 @@
         </Style>
 
         </Grid.Resources>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <DataGrid Grid.Row="0" Name="dgClients" ItemsSource="{Binding ClientsCollection}"  Margin="3,3,3,3"
-                      AutoGenerateColumns="False"
-                      AlternationCount="2" 
-                      AlternatingRowBackground="WhiteSmoke"
-                      CanUserAddRows="False"
-                      SelectedItem="{Binding SelectedClient}"
-                      RowStyle="{StaticResource RowColorBasedOnVip}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="7*" HeaderStyle="{StaticResource HeaderCenterAligned}" IsReadOnly="True"/>
-                <DataGridCheckBoxColumn Header="VIP" Binding="{Binding VIP}" Width="*" CellStyle="{StaticResource CellCenterAligned}" HeaderStyle="{StaticResource HeaderCenterAligned}" IsReadOnly="True"/>
-            </DataGrid.Columns>
-        </DataGrid>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" >
-            <Button Margin="3,3,3,3" Width="80" Content="Delete"  Command="{Binding DeleteClient}" IsEnabled="{Binding SelectedClient, Converter={StaticResource NotNullToEnabledConverter}}" />
-            <Button Margin="3,3,3,3" Width="80" Content="Add"  Command="{Binding Path=DataContext.AddClient}"/>
-            <Button Margin="3,3,3,3" Width="80" Content="Edit"  Command="{Binding Path=DataContext.EditClient}" IsEnabled="{Binding SelectedClient, Converter={StaticResource NotNullToEnabledConverter}}" />
-        </StackPanel>
-        <DataGrid Grid.Row="2" Name="dgOrders" ItemsSource="{Binding OrdersCollection}"  Margin="3,3,3,3"
-                      AutoGenerateColumns="False"
-                      AlternationCount="2" 
-                      AlternatingRowBackground="WhiteSmoke"
-                      CanUserAddRows="False"
-                      >
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*" HeaderStyle="{StaticResource HeaderCenterAligned}" IsReadOnly="True"/>
-            </DataGrid.Columns>
-        </DataGrid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+            <DataGrid Grid.Row="0" Grid.Column="0" Name="dgClients" ItemsSource="{Binding ClientsCollection}"  Margin="3,3,3,3"
+                            AutoGenerateColumns="False"
+                            AlternationCount="2" 
+                            CanUserAddRows="False"
+                            SelectedItem="{Binding SelectedClient}"
+                            RowStyle="{StaticResource RowColorBasedOnVip}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="7*" HeaderStyle="{StaticResource HeaderCenterAligned}" IsReadOnly="True"/>
+                    <DataGridCheckBoxColumn Header="VIP" Binding="{Binding VIP}" Width="*" CellStyle="{StaticResource CellCenterAligned}" HeaderStyle="{StaticResource HeaderCenterAligned}" IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right" >
+                <Button Margin="3,3,3,3" Width="80" Height="50" Content="Add"  Command="{Binding AddClient}"/>
+                <Button Margin="3,3,3,3" Width="80" Height="50" Content="Delete"  Command="{Binding DeleteClient}" IsEnabled="{Binding SelectedClient, Converter={StaticResource NotNullToEnabledConverter}}" />
+            </StackPanel>
+            <DataGrid Grid.Row="2" Grid.Column="0" Name="dgOrders" ItemsSource="{Binding OrdersCollection}"  Margin="3,3,3,3"
+                            AutoGenerateColumns="False"
+                            AlternationCount="2" 
+                            AlternatingRowBackground="WhiteSmoke"
+                            CanUserAddRows="False"
+                            >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*" HeaderStyle="{StaticResource HeaderCenterAligned}" IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right" >
+                <Button Margin="3,3,3,3" Width="80" Height="50" Content="Delete"  Command="{Binding DeleteClient}" IsEnabled="{Binding SelectedClient, Converter={StaticResource NotNullToEnabledConverter}}" />
+                <Button Margin="3,3,3,3" Width="80" Height="50" Content="Add"  Command="{Binding AddClient}"/>
+                <Button Margin="3,3,3,3" Width="80" Height="50" Content="Edit"  Command="{Binding EditClient}" IsEnabled="{Binding SelectedClient, Converter={StaticResource NotNullToEnabledConverter}}" />
+            </StackPanel>
+
+        <views:ClientEditView Grid.Row="0" Grid.RowSpan="4" Grid.Column="1"
+                              Margin="3,3,3,3" 
+                              Width="200" 
+                              DataContext="{Binding ClientEditorViewModel}" 
+                              Visibility="{Binding Path=ShowClientEditor, Converter={StaticResource BoolToVisibilityConverter}}">
+
+        </views:ClientEditView>
+       
+
     </Grid>
+    
 </Window>

@@ -85,11 +85,57 @@ namespace HomeTask.WPF.ViewModels
             }
         }
 
+        private bool _showClientEditor;
+        public bool ShowClientEditor
+        {
+            get { return _showClientEditor; }
+            set
+            {
+                if (_showClientEditor != value)
+                {
+                    OnPropertyChanging(() => ShowClientEditor);
+                    _showClientEditor = value;
+                    OnPropertyChanged(() => ShowClientEditor);
+                }
+            }
+        }
+
+        private bool _showOrderEditor;
+        public bool ShowOrderEditor
+        {
+            get { return _showOrderEditor; }
+            set
+            {
+                if (_showOrderEditor != value)
+                {
+                    OnPropertyChanging(() => ShowOrderEditor);
+                    _showOrderEditor = value;
+                    OnPropertyChanged(() => ShowOrderEditor);
+                }
+            }
+        }
+
+        private ClientEditorViewModel _clientEditorViewModel;
+        public ClientEditorViewModel ClientEditorViewModel
+        {
+            get { return _clientEditorViewModel; }
+            set
+            {
+                if (_clientEditorViewModel != value)
+                {
+                    OnPropertyChanging(() => ClientEditorViewModel);
+                    _clientEditorViewModel = value;
+                    OnPropertyChanged(() => ClientEditorViewModel);
+                }
+            }
+        }
+
         #endregion
 
         #region Commands
 
         public IAsyncCommand DeleteClient { get; private set; }
+        public DelegateCommand AddClient { get; private set; }
 
         #endregion
 
@@ -109,9 +155,10 @@ namespace HomeTask.WPF.ViewModels
             _clientsCollection = new ObservableCollection<ClientObservable>(
                 _typeAdapter.Create<IEnumerable<ClientDTO>, IEnumerable<ClientObservable>>(clients));
             _ordersCollection = new ObservableCollection<OrderObservable>();
-
-
             #region Init Commands
+
+            ShowClientEditor = false;
+            ShowOrderEditor = false;
 
             DeleteClient = AsyncCommand.Create(() =>
             {
@@ -133,6 +180,37 @@ namespace HomeTask.WPF.ViewModels
                     });
                 }
                 return Task.CompletedTask;
+            });
+
+            AddClient = new DelegateCommand((o) =>
+            {
+                ClientEditorViewModel = new ClientEditorViewModel() { Client = new ClientObservable() };
+                ClientEditorViewModel.OnEditCanceled += (sender, args) =>
+                {
+                    ShowClientEditor = false;
+                };
+                ClientEditorViewModel.OnEditDone += (sender, args) =>
+                {
+                    if (ClientEditorViewModel.Client != null)
+                    {
+                        Task.Run(() =>
+                        {
+                            _clientService.CreateAsync(new CreateClientRequest(ClientEditorViewModel.Client.Address, ClientEditorViewModel.Client.VIP)).ContinueWith((t) =>
+                            {
+                                ClientEditorViewModel.Client.Id = t.Result;
+                                System.Windows.Application.Current.Dispatcher.Invoke(
+                                    () =>
+                                    {
+                                        ClientsCollection.Add(ClientEditorViewModel.Client);
+                                        SelectedClient = ClientEditorViewModel.Client;
+                                        ShowClientEditor = false;
+                                    });
+
+                            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+                        });
+                    }
+                };
+                ShowClientEditor = true;
             });
      
             #endregion
@@ -168,12 +246,12 @@ namespace HomeTask.WPF.ViewModels
 
         public void Handle(ClientCreated @event)
         {
-            throw new System.NotImplementedException();
+           // throw new System.NotImplementedException();
         }
 
         public void Handle(ClientDeleted @event)
         {
-            throw new System.NotImplementedException();
+           // throw new System.NotImplementedException();
         }
     }
 }

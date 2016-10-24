@@ -12,7 +12,7 @@ namespace HomeTask.WPF.Views
         {
             InitializeComponent();
 
-            base.DataContext = viewModel;
+            this.DataContext = viewModel;
         }
     }
 }

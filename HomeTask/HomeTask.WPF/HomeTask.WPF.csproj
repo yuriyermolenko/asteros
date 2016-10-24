@@ -75,6 +75,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\DelegateCommands.cs" />
+    <Compile Include="ViewModels\ClientEditorViewModel.cs" />
+    <Compile Include="Views\ClientEditorEventArgs.cs" />
+    <Compile Include="Views\OrderEditView.xaml.cs">
+      <DependentUpon>OrderEditView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Views\ClientEditView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -94,10 +104,17 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\Observables\OrderObservable.cs" />
     <Compile Include="ViewModels\Observables\ClientObservable.cs" />
+    <Compile Include="Views\ClientEditView.xaml.cs">
+      <DependentUpon>ClientEditView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\OrderEditView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />

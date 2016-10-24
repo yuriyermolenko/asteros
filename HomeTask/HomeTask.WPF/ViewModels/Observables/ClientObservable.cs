@@ -36,8 +36,8 @@ namespace HomeTask.WPF.ViewModels.Observables
             }
         }
 
-        private string _vip;
-        public string VIP
+        private bool _vip;
+        public bool VIP
         {
             get { return _vip; }
             set
