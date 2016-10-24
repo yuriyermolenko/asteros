@@ -65,23 +65,33 @@
                             AlternationCount="2" 
                             AlternatingRowBackground="WhiteSmoke"
                             CanUserAddRows="False"
+                            SelectedItem="{Binding SelectedOrder}"
                             >
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*" HeaderStyle="{StaticResource HeaderCenterAligned}" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>
             <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right" >
-                <Button Margin="3,3,3,3" Width="80" Height="50" Content="Delete"  Command="{Binding DeleteClient}" IsEnabled="{Binding SelectedClient, Converter={StaticResource NotNullToEnabledConverter}}" />
-                <Button Margin="3,3,3,3" Width="80" Height="50" Content="Add"  Command="{Binding AddClient}"/>
-                <Button Margin="3,3,3,3" Width="80" Height="50" Content="Edit"  Command="{Binding EditClient}" IsEnabled="{Binding SelectedClient, Converter={StaticResource NotNullToEnabledConverter}}" />
-            </StackPanel>
+                <Button Margin="3,3,3,3" Width="80" Height="50" Content="Add"  Command="{Binding AddOrder}" IsEnabled="{Binding SelectedClient, Converter={StaticResource NotNullToEnabledConverter}}"/>
+                <Button Margin="3,3,3,3" Width="80" Height="50" Content="Edit"  Command="{Binding EditOrder}" IsEnabled="{Binding SelectedOrder, Converter={StaticResource NotNullToEnabledConverter}}" />
+            <Button Margin="3,3,3,3" Width="80" Height="50" Content="Delete"  Command="{Binding DeleteOrder}" IsEnabled="{Binding SelectedOrder, Converter={StaticResource NotNullToEnabledConverter}}" />
+        </StackPanel>
 
         <views:ClientEditView Grid.Row="0" Grid.RowSpan="4" Grid.Column="1"
                               Margin="3,3,3,3" 
                               Width="200" 
                               DataContext="{Binding ClientEditorViewModel}" 
                               Visibility="{Binding ElementName=MainWindow, Path=DataContext.ShowClientEditor, Converter={StaticResource BoolToVisibilityConverter}}">
+
         </views:ClientEditView>
+        <views:OrderEditView Grid.Row="0" Grid.RowSpan="4" Grid.Column="1"
+                              Margin="3,3,3,3" 
+                              Width="200" 
+                              DataContext="{Binding OrderEditorViewModel}" 
+                              Visibility="{Binding ElementName=MainWindow, Path=DataContext.ShowOrderEditor, Converter={StaticResource BoolToVisibilityConverter}}">
+
+        </views:OrderEditView>
+
     </Grid>
-   
+    
 </Window>

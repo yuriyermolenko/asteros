@@ -9,6 +9,7 @@ using HomeTask.Application.DTO.Order;
 using HomeTask.Application.Services.ClientAgg;
 using HomeTask.Application.Services.OrderAgg;
 using HomeTask.Application.TypeAdapter;
+using HomeTask.Domain.Contracts.Events.Order;
 using HomeTask.WPF.Commands;
 using HomeTask.Domain.Contracts.Events.Client;
 using HomeTask.Infrastructure.Messaging.Base;
@@ -18,29 +19,29 @@ using HomeTask.WPF.Views;
 
 namespace HomeTask.WPF.ViewModels
 {
-    public class ClientEditorViewModel : ObservableObject, IEventHandler<ClientDeleted>
+    public class OrderEditorViewModel : ObservableObject, IEventHandler<OrderDeleted>
     {
 
         #region Properties & Variables
 
     
-        private ClientObservable _client;
-        public ClientObservable Client
+        private OrderObservable _order;
+        public OrderObservable Order
         {
-            get { return _client; }
+            get { return _order; }
             set
             {
-                if (_client != value)
+                if (_order != value)
                 {
-                    OnPropertyChanging(() => Client);
-                    _client = value;
-                    OnPropertyChanged(()=> Client);
+                    OnPropertyChanging(() => Order);
+                    _order = value;
+                    OnPropertyChanged(()=> Order);
                 }
             }
         }
 
-        public event EventHandler<ClientEditorEventArgs> OnEditDone;
-        public event EventHandler<ClientEditorEventArgs> OnEditCanceled;
+        public event EventHandler<OrderEditorEventArgs> OnEditDone;
+        public event EventHandler<OrderEditorEventArgs> OnEditCanceled;
 
 
         #endregion
@@ -53,7 +54,7 @@ namespace HomeTask.WPF.ViewModels
         #endregion
 
 
-        public ClientEditorViewModel()
+        public OrderEditorViewModel()
         {
 
             #region Init Commands
@@ -70,7 +71,7 @@ namespace HomeTask.WPF.ViewModels
         {
             if (OnEditDone != null)
             {
-                OnEditDone(this, new ClientEditorEventArgs(Client, EditorState.Done));
+                OnEditDone(this, new OrderEditorEventArgs(Order, OrderEditorState.Done));
             }
         }
 
@@ -78,22 +79,17 @@ namespace HomeTask.WPF.ViewModels
         {
             if (OnEditCanceled != null)
             {
-                OnEditCanceled(this, new ClientEditorEventArgs(Client, EditorState.Canceled));
+                OnEditCanceled(this, new OrderEditorEventArgs(Order, OrderEditorState.Canceled));
             }
         }
 
-
-        public void Handle(ClientCreated @event)
+        public void Handle(OrderDeleted @event)
         {
-            //throw new System.NotImplementedException();
-        }
-
-        public void Handle(ClientDeleted @event)
-        {
-            if (@event.ClientId == Client.Id)
+            if (@event.Id == Order.Id)
             {
                 FireCanceled();
             }
+            
         }
     }
 }

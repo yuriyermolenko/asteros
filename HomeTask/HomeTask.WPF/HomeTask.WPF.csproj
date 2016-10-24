@@ -76,7 +76,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\DelegateCommands.cs" />
+    <Compile Include="ViewModels\OrderEditorViewModel.cs" />
     <Compile Include="ViewModels\ClientEditorViewModel.cs" />
+    <Compile Include="Views\OrderEditorEventArgs.cs" />
     <Compile Include="Views\ClientEditorEventArgs.cs" />
     <Compile Include="Views\OrderEditView.xaml.cs">
       <DependentUpon>OrderEditView.xaml</DependentUpon>
